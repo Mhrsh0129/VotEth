@@ -185,6 +185,23 @@
         color: #FFD700;
         }
 
+		.hidden {
+			display: none;
+		}
+
+		.voting-message {
+			text-align: center;
+			font-size: 24px;
+			color: #FFD700;
+			margin: 50px auto;
+			padding: 20px;
+			background-color: #1a3a5c;
+			border: 2px solid #FFD700;
+			border-radius: 8px;
+			max-width: 600px;
+			animation: fadeIn 1s ease-in;
+		}
+
 	</style>
 
 </head>
@@ -205,12 +222,19 @@
         <p id= "votingStatus"></p>
     </div>
 
+	<div id="votingOngoingMessage" class="hidden">
+		<div class="voting-message">
+			⏳ Voting is currently in progress. Results will be available once voting ends.
+		</div>
+	</div>
+
 	<div>
 		<!-- <button onclick="getAllCandidates()">List All Candidates</button> -->
+		<button onclick="checkAndDisplayResults()" id="showResultsBtn">Show Results</button>
 		<p id="p3"></p>
 	</div>
 
-    <div>
+    <div id="resultsTableContainer">
         <table id="myTable">
             <thead>
                 <tr>

@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x74F13045cf549Acce090Be4A1f84f275cA6b117F";
+let contractAddress = "0x272D16561CaB87f827907a43F43347d5c3817DCd";
 let contractAbi = [
     {
       "inputs": [
@@ -178,10 +178,12 @@ const connectMetamask = async() => {
     const basicTable = document.getElementById("candidatesTable");
     if (basicTable) {
       await getCandidateNames();
+      // Start auto-updating voting status on homepage
+      startVotingStatusUpdates();
     } else {
-      const table = document.getElementById("myTable");
-      if (table) {
-        await getAllCandidates();
+      const resultsTableContainer = document.getElementById("resultsTableContainer");
+      if (resultsTableContainer) {
+        await checkAndDisplayResults();
       }
     }
   } catch (err) {
@@ -242,8 +244,56 @@ const addVote = async() => {
         cand.innerHTML = "Vote added !!!";
     }
     else {
-        var cand = document.getElementById("cand");
-        cand.innerHTML = "Please connect metamask first";
+        var p3 = document.getElementById("p3");
+        p3.innerHTML = "Please connect metamask first";
+    }
+}
+
+let votingStatusInterval = null;
+
+const startVotingStatusUpdates = async() => {
+    // Update immediately
+    await voteStatus();
+    
+    // Then update every 5 seconds
+    if (votingStatusInterval) {
+        clearInterval(votingStatusInterval);
+    }
+    
+    votingStatusInterval = setInterval(async () => {
+        await voteStatus();
+    }, 5000); // Update every 5 seconds
+}
+
+const checkAndDisplayResults = async() => {
+    if(WALLET_CONNECTED != 0) {
+        var p3 = document.getElementById("p3");
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
+        
+        // Check voting status
+        const currentStatus = await contractInstance.getVotingStatus();
+        const votingOngoingMessage = document.getElementById("votingOngoingMessage");
+        const resultsTableContainer = document.getElementById("resultsTableContainer");
+        const showResultsBtn = document.getElementById("showResultsBtn");
+        
+        if (currentStatus) {
+            // Voting is still ongoing
+            votingOngoingMessage.classList.remove("hidden");
+            resultsTableContainer.classList.add("hidden");
+            p3.innerHTML = "";
+        } else {
+            // Voting has ended, show results
+            votingOngoingMessage.classList.add("hidden");
+            resultsTableContainer.classList.remove("hidden");
+            if (showResultsBtn) showResultsBtn.classList.add("hidden");
+            await getAllCandidates();
+        }
+    } else {
+        var p3 = document.getElementById("p3");
+        if (p3) p3.innerHTML = "Please connect metamask first";
     }
 }
 
