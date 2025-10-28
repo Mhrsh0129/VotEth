@@ -251,18 +251,46 @@ const addVote = async() => {
 
 let votingStatusInterval = null;
 
-const startVotingStatusUpdates = async() => {
-    // Update immediately
+const stopVotingStatusUpdates = () => {
+  if (votingStatusInterval) {
+    clearInterval(votingStatusInterval);
+    votingStatusInterval = null;
+  }
+};
+
+const startVotingStatusUpdates = async () => {
+  // Clean any previous interval before starting a new one
+  stopVotingStatusUpdates();
+
+  // Update immediately with error isolation
+  try {
     await voteStatus();
-    
-    // Then update every 5 seconds
-    if (votingStatusInterval) {
-        clearInterval(votingStatusInterval);
+  } catch (err) {
+    console.error('Initial voteStatus update failed:', err);
+  }
+
+  // Then update every 5 seconds with error isolation
+  votingStatusInterval = setInterval(async () => {
+    try {
+      await voteStatus();
+    } catch (err) {
+      console.error('voteStatus interval update failed:', err);
     }
-    
-    votingStatusInterval = setInterval(async () => {
-        await voteStatus();
-    }, 5000); // Update every 5 seconds
+  }, 5000);
+};
+
+// Cleanup on navigation/unload/background
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', stopVotingStatusUpdates);
+  window.addEventListener('pagehide', stopVotingStatusUpdates);
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopVotingStatusUpdates();
+    }
+  });
 }
 
 const checkAndDisplayResults = async() => {
