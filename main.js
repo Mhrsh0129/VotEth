@@ -287,8 +287,19 @@ if (typeof window !== 'undefined') {
 
 if (typeof document !== 'undefined') {
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      stopVotingStatusUpdates();
+    try {
+      if (document.hidden) {
+        // Page moved to background — stop updates
+        stopVotingStatusUpdates();
+      } else {
+        // Page returned to foreground — restart only on voting (homepage) where candidates table exists
+        const basicTable = typeof document !== 'undefined' ? document.getElementById('candidatesTable') : null;
+        if (basicTable) {
+          startVotingStatusUpdates();
+        }
+      }
+    } catch (err) {
+      console.error('visibilitychange handler error:', err);
     }
   });
 }
