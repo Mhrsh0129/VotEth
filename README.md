@@ -1,13 +1,15 @@
-# Decentralized Voting DApp (Sepolia)
+# VotEth — Decentralized Voting DApp (Sepolia)
 
-A simple, time-bound Ethereum voting dApp with a clean dark UI, MetaMask integration, and a Solidity smart contract deployed on Sepolia.
+VotEth is a simple, time-bound Ethereum voting dApp with a clean dark UI, MetaMask integration, and a Solidity smart contract deployed on Sepolia.
 
 - Frontend: Vanilla HTML/CSS + Ethers.js (MetaMask)
 - Smart contract: Solidity (Hardhat)
 - Optional backend: Express.js helpers for admin tasks
 - Network: Sepolia via Alchemy
 
-> Branding: Replace placeholders in this README with your brand name/logo. See the Branding section below.
+Live site: https://app.voteth.xyz (GitHub Pages)
+
+> Branding: This project is branded as VotEth. Add your logo at `assets/branding/logo.png` if desired, and I can wire it into the UI.
 
 ## Features
 
@@ -84,11 +86,9 @@ Be sure to keep admin operations off the public UI.
 
 ## Branding
 
-- Project Name: Your Brand Name here
-- Logo: Add your logo at `assets/branding/logo.png` and reference it in this README or your HTML pages
-- HTML Title/Text: Update `<title>` and headers in `index.html` to include your brand
-
-Feel free to provide your brand palette to theme further elements.
+- Project Name: VotEth
+- Logo: Add `assets/branding/logo.png` and reference it in README or HTML (optional)
+- HTML Titles/Headers updated to VotEth
 
 ## Security Notes
 
@@ -110,8 +110,8 @@ Summary: You may view and clone this project for personal evaluation. Any use, m
 
 ## Contact / Permission Requests
 
-- Admin: Your Name (replace in LICENSE/README)
-- Contact: your-email@example.com or open a GitHub Issue on the repo
+- Admin: VotEth Admin (Mhrsh0129)
+- Contact: Open a GitHub Issue on the repository
 
 ---
 
