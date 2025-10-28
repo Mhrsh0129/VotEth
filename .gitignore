@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Hardhat / Ethereum artifacts
+artifacts/
+cache/
+coverage/
+coverage.json
+ignition/
+/typechain
+/typechain-types
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Screenshots / generated assets
+screenshots/*.tmp
+*.png.tmp
