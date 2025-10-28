@@ -104,13 +104,20 @@ Be sure to keep admin operations off the public UI.
 
 ## License
 
-This project is provided under a custom “Permission-Required” license. See `LICENSE` for full terms.
+This project is licensed under the MIT License. See `LICENSE` for full terms.
 
-Summary: You may view and clone this project for personal evaluation. Any use, modification, distribution, or commercial activity requires prior written permission from the Admin. Branding must be retained. No warranty.
+You are free to use, modify, distribute, and build upon this project. Contributions are welcome!
 
-## Contact / Permission Requests
+## Contributing
 
-- Admin: VotEth Admin (Mhrsh0129)
-- Contact: Open a GitHub Issue on the repository
+Contributions are welcome! Feel free to:
+- Open issues for bugs or feature requests
+- Submit pull requests with improvements
+- Fork and build your own version
+
+## Contact
+
+- Maintainer: VotEth (Mhrsh0129)
+- Issues/Questions: Open a GitHub Issue on the repository
 
 ---__
