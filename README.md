@@ -113,6 +113,4 @@ Summary: You may view and clone this project for personal evaluation. Any use, m
 - Admin: VotEth Admin (Mhrsh0129)
 - Contact: Open a GitHub Issue on the repository
 
----
-
-If you’d like, I can also wire GitHub Pages for the frontend (static host) while keeping admin endpoints private.
+---__
