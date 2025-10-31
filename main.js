@@ -1,5 +1,6 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x272D16561CaB87f827907a43F43347d5c3817DCd";
+let contractAddress = "0x53a519D1C007943630600F36cD12AB0B5FBa89Dd";
+let currentElectionName = "Current Election"; // Track which election we're viewing
 let contractAbi = [
     {
       "inputs": [
@@ -165,6 +166,129 @@ let contractAbi = [
     }
   ];
 
+// Load saved elections from localStorage
+const getSavedElections = () => {
+  const saved = localStorage.getItem('savedElections');
+  return saved ? JSON.parse(saved) : [];
+};
+
+// Save election to localStorage
+const saveElection = (address, name) => {
+  const elections = getSavedElections();
+  // Check if already exists
+  const exists = elections.find(e => e.address.toLowerCase() === address.toLowerCase());
+  if (!exists) {
+    elections.unshift({ address, name, timestamp: Date.now() });
+    // Keep only last 20 elections
+    if (elections.length > 20) elections.pop();
+    localStorage.setItem('savedElections', JSON.stringify(elections));
+  }
+};
+
+// Switch to a different contract address
+const switchContract = async(newAddress, electionName = "Previous Election") => {
+  if (!ethers.utils.isAddress(newAddress)) {
+    alert("Invalid contract address!");
+    return;
+  }
+  
+  contractAddress = newAddress;
+  currentElectionName = electionName;
+  
+  // Save to history
+  saveElection(newAddress, electionName);
+  
+  // Update UI to show which election
+  updateElectionDisplay();
+  
+  // Refresh data if wallet is connected
+  if (WALLET_CONNECTED) {
+    try {
+      const basicTable = document.getElementById("candidatesTable");
+      if (basicTable) {
+        await getCandidateNames();
+        await voteStatus();
+      } else {
+        const resultsTableContainer = document.getElementById("resultsTableContainer");
+        if (resultsTableContainer) {
+          await checkAndDisplayResults();
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load data for this contract:", err);
+      alert("Failed to load election data. Make sure this is a valid Voting contract.");
+    }
+  }
+};
+
+// Update UI to show current election
+const updateElectionDisplay = () => {
+  const electionDisplay = document.getElementById("currentElectionDisplay");
+  if (electionDisplay) {
+    electionDisplay.innerHTML = `
+      <strong>Election:</strong> ${currentElectionName}<br>
+      <small>Contract: ${contractAddress.substring(0, 6)}...${contractAddress.substring(38)}</small>
+    `;
+  }
+};
+
+// Show saved elections modal
+const showElectionsHistory = () => {
+  const elections = getSavedElections();
+  const modal = document.getElementById("electionsModal");
+  const list = document.getElementById("electionsList");
+  
+  list.innerHTML = '';
+  
+  if (elections.length === 0) {
+    list.innerHTML = '<p style="text-align: center; padding: 20px;">No saved elections yet.</p>';
+  } else {
+    elections.forEach((election, index) => {
+      const item = document.createElement('div');
+      item.className = 'election-item';
+      const date = new Date(election.timestamp).toLocaleString();
+      item.innerHTML = `
+        <div>
+          <strong>${election.name}</strong><br>
+          <small>${election.address}</small><br>
+          <small style="color: #999;">Added: ${date}</small>
+        </div>
+        <button onclick="loadElection('${election.address}', '${election.name}')" class="load-btn">Load</button>
+      `;
+      list.appendChild(item);
+    });
+  }
+  
+  modal.style.display = "block";
+};
+
+// Load a specific election
+const loadElection = async(address, name) => {
+  document.getElementById("electionsModal").style.display = "none";
+  await switchContract(address, name);
+  alert(`Switched to: ${name}`);
+};
+
+// Close modal
+const closeModal = () => {
+  document.getElementById("electionsModal").style.display = "none";
+};
+
+// Manual switch from input field
+const switchContractManual = async() => {
+  const input = document.getElementById("contractAddressInput");
+  const address = input.value.trim();
+  
+  if (!address) {
+    alert("Please enter a contract address!");
+    return;
+  }
+  
+  const name = prompt("Enter a name for this election (optional):", "Previous Election");
+  await switchContract(address, name || "Previous Election");
+  input.value = ""; // Clear input
+};
+
 const connectMetamask = async() => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
@@ -172,6 +296,9 @@ const connectMetamask = async() => {
     WALLET_CONNECTED = await signer.getAddress();
     var element = document.getElementById("metamasknotification");
     element.innerHTML = "Metamask is connected " + WALLET_CONNECTED;
+    
+    // Update election display on connect
+    updateElectionDisplay();
 
   // Auto-refresh candidates list on pages that have the table
   try {

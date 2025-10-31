@@ -1,0 +1,27 @@
+================================================================================
+                    VOTING DAPP - CONTRACT ADDRESSES LOG
+================================================================================
+
+This file automatically logs all deployed contract addresses.
+Each deployment includes:
+- Date and time of deployment
+- Contract address
+- Network (Sepolia)
+- Initial candidates
+- Voting duration
+- Etherscan link for verification
+
+Use these addresses to access previous elections in the app!
+
+================================================================================
+
+
+================================================================================
+Deployment Date: 31/10/2025, 9:04:41 am
+Timestamp: 2025-10-31T03:34:41.112Z
+Contract Address: 0x53a519D1C007943630600F36cD12AB0B5FBa89Dd
+Network: Sepolia
+Candidates: BJP, NDA, AAP, BSPA, INC
+Voting Duration: 5 minutes
+Etherscan: https://sepolia.etherscan.io/address/0x53a519D1C007943630600F36cD12AB0B5FBa89Dd
+================================================================================

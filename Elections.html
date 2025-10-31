@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>VotEth — Election Management</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="main.js"></script>
+	<style>
+		body {
+			background-color: #132440;
+			color: white;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+
+		button {
+			background-color: #FFD700;
+			color: #132440;
+			padding: 12px 24px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 16px;
+			font-weight: bold;
+			transition: all 0.3s ease;
+			transform: translateY(0);
+		}
+
+		button:hover {
+			background-color: #D3DAD9;
+			transform: translateY(-3px);
+			box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+		}
+
+		p {
+			text-align: center;
+			font-size: 20px;
+			margin-top: 30px;
+			animation: fadeIn 1s ease-in;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		@keyframes slideIn {
+			from {
+				opacity: 0;
+				transform: translateX(-50px);
+			}
+			to {
+				opacity: 1;
+				transform: translateX(0);
+			}
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			margin-top: 30px;
+			animation: fadeIn 1s ease-in;
+		}
+
+		.page-title {
+			font-size: 50px;
+			font-weight: bold;
+			margin-bottom: 10px;
+			text-align: center;
+			animation: slideIn 1s ease-out;
+		}
+
+		.page-subtitle {
+			font-size: 18px;
+			color: #D3DAD9;
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		/* Navigation bar */
+		.navbar {
+			overflow: hidden;
+			background-color: #1a2f4a;
+			font-family: Arial;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+		}
+
+		.navbar a {
+			float: left;
+			display: block;
+			color: white;
+			text-align: center;
+			padding: 14px 20px;
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.navbar a:hover {
+			background-color: #FFD700;
+			color: #132440;
+		}
+
+		.navbar a.active {
+			background-color: #FFD700;
+			color: #132440;
+		}
+
+		/* Election Management Sections */
+		.management-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+			gap: 20px;
+			max-width: 1200px;
+			margin: 30px auto;
+			padding: 0 20px;
+		}
+
+		.management-card {
+			background-color: #1a3a5c;
+			padding: 25px;
+			border-radius: 8px;
+			border: 2px solid #FFD700;
+			animation: fadeIn 1.2s ease-in;
+		}
+
+		.management-card h3 {
+			margin-top: 0;
+			color: #FFD700;
+			font-size: 24px;
+			border-bottom: 2px solid #FFD700;
+			padding-bottom: 10px;
+			margin-bottom: 20px;
+		}
+
+		.management-card p {
+			font-size: 16px;
+			line-height: 1.6;
+			margin: 15px 0;
+			text-align: left;
+		}
+
+		.management-card button {
+			margin: 10px 5px;
+			display: inline-block;
+		}
+
+		#currentElectionDisplay {
+			text-align: center;
+			margin: 20px 0;
+			padding: 20px;
+			background-color: #0f1f33;
+			border-radius: 8px;
+			font-size: 16px;
+			border: 2px solid #FFD700;
+		}
+
+		.address-input-group {
+			display: flex;
+			gap: 10px;
+			align-items: center;
+			justify-content: center;
+			flex-wrap: wrap;
+			margin: 15px 0;
+		}
+
+		input[type=text] {
+			flex: 1;
+			min-width: 300px;
+			padding: 12px 20px;
+			box-sizing: border-box;
+			border: 2px solid #FFD700;
+			border-radius: 4px;
+			background-color: #0f1f33;
+			color: white;
+			transition: border-color 0.3s ease;
+		}
+
+		input[type=text]:focus {
+			outline: none;
+			border-color: #D3DAD9;
+		}
+
+		/* History List */
+		.history-list {
+			max-height: 400px;
+			overflow-y: auto;
+			margin-top: 15px;
+		}
+
+		.history-item {
+			background-color: #0f1f33;
+			padding: 15px;
+			margin: 10px 0;
+			border-radius: 4px;
+			border: 1px solid #FFD700;
+			transition: all 0.3s ease;
+		}
+
+		.history-item:hover {
+			background-color: #132440;
+			border-color: #D3DAD9;
+		}
+
+		.history-item strong {
+			color: #FFD700;
+			display: block;
+			margin-bottom: 5px;
+		}
+
+		.history-item small {
+			color: #D3DAD9;
+			word-break: break-all;
+			display: block;
+			margin: 5px 0;
+		}
+
+		.history-item button {
+			margin-top: 10px;
+		}
+
+		/* Info boxes */
+		.info-box {
+			background-color: #0f1f33;
+			padding: 15px;
+			border-radius: 4px;
+			border-left: 4px solid #FFD700;
+			margin: 15px 0;
+		}
+
+		.info-box strong {
+			color: #FFD700;
+		}
+
+		/* Scrollbar styling */
+		.history-list::-webkit-scrollbar {
+			width: 8px;
+		}
+
+		.history-list::-webkit-scrollbar-track {
+			background: #0f1f33;
+			border-radius: 4px;
+		}
+
+		.history-list::-webkit-scrollbar-thumb {
+			background: #FFD700;
+			border-radius: 4px;
+		}
+
+		.history-list::-webkit-scrollbar-thumb:hover {
+			background: #D3DAD9;
+		}
+
+		/* Stats display */
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+			gap: 15px;
+			margin: 20px 0;
+		}
+
+		.stat-card {
+			background-color: #0f1f33;
+			padding: 20px;
+			border-radius: 4px;
+			text-align: center;
+			border: 1px solid #FFD700;
+		}
+
+		.stat-number {
+			font-size: 32px;
+			font-weight: bold;
+			color: #FFD700;
+		}
+
+		.stat-label {
+			font-size: 14px;
+			color: #D3DAD9;
+			margin-top: 5px;
+		}
+
+	</style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/index.html">Vote</a>
+        <a href="/ListVoters.html">Results</a>
+        <a href="/Elections.html" class="active">Elections</a>
+    </div>
+
+	<div class="container">
+		<div class="page-title">📋 Election Management</div>
+		<div class="page-subtitle">Manage and switch between different elections</div>
+	</div>
+
+    <div class="container">
+        <button onclick="connectMetamask()">Connect Metamask</button>
+        <p id="metamasknotification"></p>
+    </div>
+
+	<!-- Current Election Display -->
+	<div class="container">
+		<div id="currentElectionDisplay" style="color: #D3DAD9; max-width: 800px; width: 90%;">
+			<strong style="font-size: 20px;">Current Election</strong><br><br>
+			<strong>Election:</strong> Current Election<br>
+			<small>Connect wallet to view details</small>
+		</div>
+	</div>
+
+	<!-- Management Cards Grid -->
+	<div class="management-grid">
+		<!-- Load Election Card -->
+		<div class="management-card">
+			<h3>🔄 Load Previous Election</h3>
+			<p>Enter a contract address to load and view a previous election's data.</p>
+			
+			<div class="info-box">
+				<strong>How it works:</strong><br>
+				<small>1. Paste contract address below<br>
+				2. Click "Load Election"<br>
+				3. Optionally name this election<br>
+				4. View all data from that election</small>
+			</div>
+
+			<div class="address-input-group">
+				<input type="text" id="contractAddressInput" placeholder="0x..." />
+			</div>
+			<button onclick="switchContractManual()" style="display: block; margin: 10px auto;">Load Election</button>
+
+			<p id="loadStatus" style="font-size: 14px; color: #D3DAD9;"></p>
+		</div>
+
+		<!-- Elections History Card -->
+		<div class="management-card">
+			<h3>📜 Elections History</h3>
+			<p>Quick access to previously loaded elections.</p>
+
+			<div class="stats-grid">
+				<div class="stat-card">
+					<div class="stat-number" id="historyCount">0</div>
+					<div class="stat-label">Saved Elections</div>
+				</div>
+			</div>
+
+			<div class="history-list" id="electionsHistoryList">
+				<p style="text-align: center; color: #D3DAD9;">No elections in history yet.</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- Additional Info Section -->
+	<div class="container" style="max-width: 1200px; width: 90%;">
+		<div class="management-card">
+			<h3>ℹ️ About Election Management</h3>
+			<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+				<div class="info-box">
+					<strong>📍 Finding Contract Addresses</strong><br>
+					<small>• Check deployment logs<br>
+					• Look in contract-addresses.txt<br>
+					• View on Sepolia Etherscan<br>
+					• Run: npm run addresses</small>
+				</div>
+
+				<div class="info-box">
+					<strong>💾 Data Storage</strong><br>
+					<small>• Up to 20 recent elections saved<br>
+					• Stored in browser localStorage<br>
+					• Persists across sessions<br>
+					• Automatically managed</small>
+				</div>
+
+				<div class="info-box">
+					<strong>🔒 Security</strong><br>
+					<small>• Read-only access to old elections<br>
+					• Contract addresses validated<br>
+					• Only Sepolia network supported<br>
+					• MetaMask required</small>
+				</div>
+
+				<div class="info-box">
+					<strong>✨ Features</strong><br>
+					<small>• View past election results<br>
+					• Compare different elections<br>
+					• Access historical data<br>
+					• Share with others</small>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Load and display history on page load
+		function loadHistoryDisplay() {
+			const elections = getSavedElections();
+			const count = document.getElementById('historyCount');
+			const list = document.getElementById('electionsHistoryList');
+
+			count.textContent = elections.length;
+
+			if (elections.length === 0) {
+				list.innerHTML = '<p style="text-align: center; color: #D3DAD9; padding: 20px;">No elections in history yet.<br><small>Load an election to add it to history.</small></p>';
+			} else {
+				list.innerHTML = '';
+				elections.forEach((election, index) => {
+					const item = document.createElement('div');
+					item.className = 'history-item';
+					const date = new Date(election.timestamp).toLocaleString();
+					item.innerHTML = `
+						<strong>${election.name}</strong>
+						<small>${election.address}</small>
+						<small style="color: #999;">Added: ${date}</small>
+						<button onclick="loadElectionFromHistory('${election.address}', '${election.name}')">Load This Election</button>
+					`;
+					list.appendChild(item);
+				});
+			}
+		}
+
+		// Load election from history
+		async function loadElectionFromHistory(address, name) {
+			await switchContract(address, name);
+			document.getElementById('loadStatus').innerHTML = `✅ Loaded: ${name}`;
+			setTimeout(() => {
+				document.getElementById('loadStatus').innerHTML = '';
+			}, 3000);
+		}
+
+		// Refresh history when page becomes visible
+		document.addEventListener('visibilitychange', () => {
+			if (!document.hidden) {
+				loadHistoryDisplay();
+			}
+		});
+
+		// Load on page load
+		window.addEventListener('load', () => {
+			loadHistoryDisplay();
+			// Update display every 2 seconds to reflect changes
+			setInterval(loadHistoryDisplay, 2000);
+		});
+	</script>
+</body>
+</html>

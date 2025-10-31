@@ -17,16 +17,83 @@ Live site: https://app.voteth.xyz (GitHub Pages)
 - Read-only candidate list on homepage (index + name)
 - Voting status + remaining time
 - Admin-only: Add candidates outside the voting window (via code/CLI, not the UI)
+- **NEW:** Access previous elections by contract address
+- **NEW:** Election history management with localStorage
+- **NEW:** Quick switch between multiple elections
+- **NEW:** Automated startup script for deployment and server start
+- **NEW:** Automatic contract address logging to text file
+- **NEW:** Contract address management utilities
+
+## Recent Updates
+
+### 🎯 Automated Startup System
+- One-click deployment and server start
+- Automatic contract address updates across all files
+
+### 🗳️ Previous Elections Access
+- Load and view any previous election by contract address
+- Maintain history of up to 20 recent elections
+- Easy switching between current and past elections
+
+### 📝 Contract Address Logging
+- Automatic logging of all deployed contract addresses
+- Plain text file with complete deployment details
+- Management utilities to view, list, and export addresses
+
+### 📚 Complete Documentation
+- All guides combined in one comprehensive document
+- Development timeline with dates
+- See [COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md) for full details
 
 ## Project Structure
 
 - `index.html` – Homepage: connect wallet, vote, see status, list candidates
-- `ListVoters.html` – Read-only list page (admin UI removed as requested)
+- `ListVoters.html` – Results page: view voting results
+- `Elections.html` – **NEW:** Dedicated election management page
 - `main.js` – Frontend logic using Ethers + MetaMask
 - `contracts/Voting.sol` – Smart contract (time-limited voting)
 - `scripts/deploy.js` – Hardhat deploy script
 - `index.js` – Optional Express server with helper endpoints (admin-only)
 - `screenshots/` – Optional automated screenshots output (Puppeteer)
+- `contract-addresses.txt` – Automatic log of all deployed contract addresses
+- `scripts/manage-addresses.js` – Utility to manage contract addresses
+
+## Pages
+
+### 🗳️ Vote (index.html)
+- Main voting interface
+- Connect MetaMask
+- Cast your vote
+- View candidates
+- Check voting status
+
+### 📊 Results (ListVoters.html)
+- View election results
+- See vote counts
+- Check if voting is ongoing
+
+### 📋 Elections (Elections.html)
+- **NEW:** Dedicated election management
+- Load previous elections by address
+- View elections history
+- Quick switch between elections
+
+## Useful Commands
+
+### Deployment & Server
+```powershell
+npm start                    # Auto-deploy and start server
+npm run deploy              # Deploy contract only
+npm run server              # Start server only
+```
+
+### Contract Address Management
+```powershell
+npm run addresses           # List all contract addresses
+npm run addresses:latest    # Show latest address
+npm run addresses:list      # Show all deployments with details
+npm run addresses:export    # Export to JSON
+```
 
 ## Prerequisites
 
@@ -36,6 +103,30 @@ Live site: https://app.voteth.xyz (GitHub Pages)
 - A funded Sepolia account to deploy/execute admin txs
 
 ## Quick Start
+
+### Automated Startup (Recommended)
+
+Simply run one of these commands to automatically compile, deploy, and start the server:
+
+```powershell
+# Using the start script
+npm start
+
+# Or double-click start.bat
+# Or run PowerShell script
+.\start.ps1
+```
+
+This will automatically:
+1. Install dependencies (if needed)
+2. Compile smart contracts
+3. Deploy to Sepolia network
+4. Update contract addresses in all files
+5. Start the Express server
+
+See [COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md) for detailed guides.
+
+### Manual Setup
 
 1) Install dependencies
 
@@ -96,11 +187,24 @@ Be sure to keep admin operations off the public UI.
 - Verify the chain ID (Sepolia) in MetaMask before any transaction
 - Contract only allows adding candidates before start or after end of voting
 
-## Troubleshooting
+## Documentation
+
+For complete documentation including:
+- Detailed setup guides
+- Feature walkthroughs
+- Command reference
+- Troubleshooting
+- Best practices
+- Development timeline
+
+See **[COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md)**
+
+## Quick Troubleshooting
 
 - Ethers.js not defined: ensure the CDN `<script>` is loaded before `main.js`
 - Wrong network: switch MetaMask to Sepolia
-- Contract address wrong: update `CONTRACT_ADDRESS` in `.env` and ensure `main.js`’s address matches
+- Contract address wrong: update `CONTRACT_ADDRESS` in `.env` and ensure `main.js`'s address matches
+- For more help: see [COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md)
 
 ## License
 

@@ -4,7 +4,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "capture:screens": "node scripts/capture-screenshots.js"
+    "capture:screens": "node scripts/capture-screenshots.js",
+    "start": "node start.js",
+    "deploy": "npx hardhat run scripts/deploy-and-update.js --network sepolia",
+    "server": "node index.js",
+    "addresses": "node scripts/manage-addresses.js addresses",
+    "addresses:latest": "node scripts/manage-addresses.js latest",
+    "addresses:list": "node scripts/manage-addresses.js list",
+    "addresses:export": "node scripts/manage-addresses.js export"
   },
   "author": "",
   "license": "ISC",
