@@ -1,6 +1,7 @@
 const { spawn, execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const open = require('open');
 
 console.log("=".repeat(60));
 console.log("🎯 VOTING DAPP - AUTOMATIC STARTUP");
@@ -33,14 +34,13 @@ function runCommand(command, args, cwd = __dirname) {
   });
 }
 
-// Function to open URL in default browser
-function openBrowser(url) {
-  const start = (process.platform === 'darwin' ? 'open' : 
-                 process.platform === 'win32' ? 'start' : 'xdg-open');
+// Function to open URL in default browser (safe, no command injection)
+async function openBrowser(url) {
   try {
-    execSync(`${start} ${url}`, { stdio: 'ignore' });
+    await open(url);
   } catch (err) {
     console.log(`⚠️  Could not auto-open browser. Please visit: ${url}`);
+    console.error('Error details:', err.message);
   }
 }
 
@@ -61,8 +61,8 @@ function startServer() {
       reject(err);
     });
     
-    // Give server a moment to start
-    setTimeout(() => {
+    // Give server a moment to start, then open browser
+    setTimeout(async () => {
       console.log("\n✅ Server started successfully!");
       console.log("\n🌐 Local: http://localhost:3000");
       console.log("🌐 Live:  https://vot-eth.vercel.app");
@@ -71,7 +71,7 @@ function startServer() {
       
       // Auto-open live website in browser
       console.log("\n🚀 Opening live website in browser...");
-      openBrowser('https://vot-eth.vercel.app');
+      await openBrowser('https://vot-eth.vercel.app');
       
       resolve(server);
     }, 2000);
