@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>VotEth — Decentralized Voting</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <script src="main.js"></script>
-	<title>VotEth — Decentralized Voting</title>
 	<style>
 		body {
 			background-color: #132440;
@@ -221,6 +222,119 @@
 	.contract-address-full span:last-child {
 		color: #FFD700;
 		word-break: break-all;
+	}
+
+	/* ========================================
+	   LOADING SPINNER
+	   ======================================== */
+	.spinner {
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		border: 3px solid rgba(255, 255, 255, 0.3);
+		border-radius: 50%;
+		border-top-color: #FFD700;
+		animation: spin 1s linear infinite;
+		margin-left: 8px;
+		vertical-align: middle;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
+	}
+
+	.loading-text {
+		color: #FFA500;
+	}
+
+	.success-text {
+		color: #00FF00;
+	}
+
+	.error-text {
+		color: #FF6B6B;
+	}
+
+
+	/* ========================================
+	   MOBILE RESPONSIVENESS
+	   ======================================== */
+	@media (max-width: 768px) {
+		/* Container adjustments */
+		.container div:first-child {
+			font-size: 32px !important;
+			padding: 0 20px;
+			text-align: center;
+		}
+
+		/* Navigation bar - stack vertically on mobile */
+		.navbar {
+			flex-direction: column;
+		}
+
+		.navbar a {
+			width: 100%;
+			text-align: center;
+			padding: 14px 0;
+			border-bottom: 1px solid #132440;
+		}
+
+		/* Form inputs - full width on mobile */
+		input[type=text], input[type=number], select {
+			width: 85% !important;
+			font-size: 16px; /* Prevents zoom on iOS */
+		}
+
+		/* Buttons */
+		button {
+			width: 85%;
+			margin: 20px auto;
+			font-size: 14px;
+			padding: 14px 20px;
+		}
+
+		/* Tables - make scrollable */
+		table {
+			display: block;
+			overflow-x: auto;
+			white-space: nowrap;
+			font-size: 14px;
+		}
+
+		/* Text and paragraphs */
+		p {
+			font-size: 16px;
+			padding: 0 15px;
+		}
+
+		/* Election display box */
+		.election-display-box {
+			padding: 12px;
+			font-size: 14px;
+		}
+
+		.contract-address-full {
+			font-size: 11px;
+		}
+	}
+
+	/* Small phones */
+	@media (max-width: 480px) {
+		.container div:first-child {
+			font-size: 24px !important;
+		}
+
+		input[type=text], input[type=number], select {
+			width: 90% !important;
+		}
+
+		button {
+			width: 90%;
+		}
+
+		table {
+			font-size: 12px;
+		}
 	}
 
 	</style>

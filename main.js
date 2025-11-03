@@ -1,6 +1,21 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x8847231F23dA7422ba2b4ADAaDBBeF69Dbd85149";
+let contractAddress = "0xAE8d6e761C8986491A2abEA84e5d3fea0A675c77"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
+
+// Load contract address from config.json
+async function loadConfig() {
+  try {
+    const response = await fetch('/config.json');
+    const config = await response.json();
+    contractAddress = config.contractAddress;
+    console.log("✅ Loaded contract address from config:", contractAddress);
+  } catch (error) {
+    console.warn("⚠️ Failed to load config.json, using fallback address:", error);
+  }
+}
+
+// Load config on page load
+loadConfig();
 
 // Network configuration
 const SEPOLIA_CHAIN_ID = 11155111; // Sepolia testnet
@@ -389,8 +404,8 @@ const getCandidateNames = async() => {
   
   if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
     try {
-      p3.innerHTML = "⏳ Loading candidates from blockchain...";
-      p3.style.color = "orange";
+      p3.innerHTML = '⏳ Loading candidates<span class="spinner"></span>';
+      p3.className = "loading-text";
       
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
@@ -422,11 +437,11 @@ const getCandidateNames = async() => {
       }
 
       p3.innerHTML = "✅ Candidates loaded successfully";
-      p3.style.color = "green";
+      p3.className = "success-text";
     } catch (err) {
       console.error("Error loading candidates:", err);
       p3.innerHTML = "❌ Failed to load candidates. Please refresh the page.";
-      p3.style.color = "red";
+      p3.className = "error-text";
     }
   }
   else {
@@ -479,16 +494,16 @@ const addVote = async() => {
             const signer = provider.getSigner();
             const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
             
-            cand.innerHTML = "⏳ Please wait, submitting your vote...";
-            cand.style.color = "orange";
+            cand.innerHTML = '⏳ Submitting vote<span class="spinner"></span>';
+            cand.className = "loading-text";
             
             const tx = await contractInstance.vote(candidateIndex);
             
-            cand.innerHTML = "⏳ Transaction submitted, waiting for confirmation...";
+            cand.innerHTML = '⏳ Confirming transaction<span class="spinner"></span>';
             await tx.wait();
             
             cand.innerHTML = "✅ Vote successfully recorded!";
-            cand.style.color = "green";
+            cand.className = "success-text";
         } catch (err) {
             console.error("Voting error:", err);
             

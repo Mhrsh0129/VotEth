@@ -82,6 +82,18 @@ async function main() {
     console.log("⚠️  Warning: main.js file not found");
   }
   
+  // Update config.json file
+  const configPath = path.join(__dirname, '..', 'config.json');
+  const configData = {
+    contractAddress: contractAddress,
+    network: "sepolia",
+    networkId: 11155111,
+    lastUpdated: new Date().toISOString()
+  };
+  
+  fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
+  console.log("✅ Updated config.json with new contract address");
+  
   console.log("\n🎉 Deployment and update complete!");
   console.log("📍 Contract Address:", contractAddress);
   

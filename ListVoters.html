@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>VotEth — Results</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <script src="main.js"></script>
-	<title>VotEth — Results</title>
 	<style>
 		body {
 			background-color: #132440;
@@ -201,6 +202,68 @@
 			max-width: 600px;
 			animation: fadeIn 1s ease-in;
 		}
+
+	/* ========================================
+	   MOBILE RESPONSIVENESS
+	   ======================================== */
+	@media (max-width: 768px) {
+		/* Navigation bar */
+		.navbar {
+			flex-direction: column;
+		}
+
+		.navbar a {
+			width: 100%;
+			text-align: center;
+			padding: 14px 0;
+			border-bottom: 1px solid #132440;
+		}
+
+		/* Buttons */
+		button {
+			width: 85%;
+			margin: 20px auto;
+			font-size: 14px;
+			padding: 14px 20px;
+		}
+
+		/* Tables - make scrollable */
+		table {
+			display: block;
+			overflow-x: auto;
+			white-space: nowrap;
+			font-size: 14px;
+			margin: 20px 10px;
+		}
+
+		/* Text and paragraphs */
+		p {
+			font-size: 16px;
+			padding: 0 15px;
+		}
+
+		/* Voting ongoing message */
+		.voting-ongoing {
+			max-width: 90%;
+			padding: 15px;
+			font-size: 16px;
+		}
+	}
+
+	/* Small phones */
+	@media (max-width: 480px) {
+		button {
+			width: 90%;
+		}
+
+		table {
+			font-size: 12px;
+		}
+
+		.voting-ongoing {
+			font-size: 14px;
+		}
+	}
 
 	</style>
 
