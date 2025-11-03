@@ -1,7 +1,12 @@
 const { spawn, execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
-const open = require('open');
+
+// Dynamic import for ESM module
+let open;
+(async () => {
+  open = (await import('open')).default;
+})();
 
 console.log("=".repeat(60));
 console.log("🎯 VOTING DAPP - AUTOMATIC STARTUP");
@@ -37,6 +42,10 @@ function runCommand(command, args, cwd = __dirname) {
 // Function to open URL in default browser (safe, no command injection)
 async function openBrowser(url) {
   try {
+    if (!open) {
+      // If open is not loaded yet, load it dynamically
+      open = (await import('open')).default;
+    }
     await open(url);
   } catch (err) {
     console.log(`⚠️  Could not auto-open browser. Please visit: ${url}`);
