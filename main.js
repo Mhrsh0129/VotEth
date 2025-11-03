@@ -297,8 +297,9 @@ const connectMetamask = async() => {
     await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     WALLET_CONNECTED = await signer.getAddress();
-    var element = document.getElementById("metamasknotification");
-    element.innerHTML = "Metamask is connected " + WALLET_CONNECTED;
+    
+    // Update UI notification
+    updateWalletConnectionUI();
     
     // Update election display on connect
     updateElectionDisplay();
@@ -321,6 +322,14 @@ const connectMetamask = async() => {
     console.error("Failed to auto-load candidates:", err);
   }
 }
+
+// Centralized UI update for wallet connection
+const updateWalletConnectionUI = () => {
+  const element = document.getElementById("metamasknotification");
+  if (element && WALLET_CONNECTED) {
+    element.innerHTML = "Metamask is connected " + WALLET_CONNECTED;
+  }
+};
 
 const getCandidateNames = async() => {
   if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
@@ -469,22 +478,24 @@ if (typeof window !== 'undefined') {
         // Homepage detected - try to load data if user already connected before
         if (typeof window.ethereum !== 'undefined') {
           window.ethereum.request({ method: 'eth_accounts' })
-            .then(accounts => {
+            .then(async accounts => {
               if (accounts && accounts.length > 0) {
-                // User is already connected, auto-load everything
-                WALLET_CONNECTED = accounts[0];
+                // User is already connected - reuse proper connection flow
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                WALLET_CONNECTED = await signer.getAddress();
                 
-                // Update UI to show connection status
-                const notificationEl = document.getElementById('metamasknotification');
-                if (notificationEl) {
-                  notificationEl.innerHTML = `✅ Wallet connected: ${WALLET_CONNECTED.substring(0, 6)}...${WALLET_CONNECTED.substring(38)}`;
-                }
+                // Use centralized UI update for consistency
+                updateWalletConnectionUI();
                 
                 // Load data
-                getCandidateNames();
-                startVotingStatusUpdates();
-                
-                console.log('Auto-connected to wallet:', WALLET_CONNECTED);
+                try {
+                  await getCandidateNames();
+                  await startVotingStatusUpdates();
+                  console.log('Auto-connected to wallet:', WALLET_CONNECTED);
+                } catch (err) {
+                  console.error('Auto-load data failed:', err);
+                }
               }
             })
             .catch(err => {
