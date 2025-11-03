@@ -23,6 +23,8 @@ Live site: https://app.voteth.xyz (GitHub Pages)
 - **NEW:** Automated startup script for deployment and server start
 - **NEW:** Automatic contract address logging to text file
 - **NEW:** Contract address management utilities
+- **NEW:** Contract address shown on homepage
+- **NEW:** Save election results to contract-addresses.txt
 
 ## Recent Updates
 
@@ -94,6 +96,21 @@ npm run addresses:latest    # Show latest address
 npm run addresses:list      # Show all deployments with details
 npm run addresses:export    # Export to JSON
 ```
+
+### Save Election Results to Log
+Append current or final results to `contract-addresses.txt` for a given contract.
+
+```powershell
+# Save results for the latest deployed contract
+npm run results:save
+
+# Save results for a specific address
+npm run results:save:addr -- 0xYourContractAddressHere
+```
+
+Notes:
+- If voting is still active, a snapshot of current counts will be saved.
+- Results are appended as a separate block with timestamp and winners.
 
 ## Prerequisites
 

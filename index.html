@@ -213,8 +213,20 @@
         <p id="metamasknotification"></p>
     </div>
 
+	<!-- Current Contract / Election Display -->
+	<div class="container">
+		<div id="currentElectionDisplay" style="color: #D3DAD9; max-width: 800px; width: 90%; background-color: #0f1f33; border: 2px solid #FFD700; border-radius: 8px; padding: 16px; text-align: center;">
+			<strong style="font-size: 20px;">Current Election</strong><br><br>
+			<strong>Election:</strong> Current Election<br>
+			<small>Connect wallet to view details</small>
+			<div style="margin-top: 8px; font-size: 12px; color: #9fb3ca;">
+				<span>Contract (full): </span><span id="contractFullAddress" style="color: #FFD700; word-break: break-all;">—</span>
+			</div>
+		</div>
+	</div>
+
     <div class="container">
-        <p id="status" style="font-size: 22px; color: #FFD700; font-weight: bold;"></p>
+        <p id="status" style="font-size: 22px; color: #FFD700; font-weight: bold;">Connect MetaMask to view voting status</p>
         <p id="time" style="font-size: 20px; color: #D3DAD9;"></p>
     </div>
 
@@ -228,7 +240,7 @@
 	<div class="container">
 		<span>All Candidates</span>
 		<button onclick="getCandidateNames()">Refresh Candidates</button>
-		<p id="p3"></p>
+		<p id="p3">Connect MetaMask to view candidates</p>
 
 		<table id="candidatesTable">
 			<thead>

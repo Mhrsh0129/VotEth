@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x53a519D1C007943630600F36cD12AB0B5FBa89Dd";
+let contractAddress = "0xeb40D8763B817E627BCe443BAE320a11D9Ab34A3";
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let contractAbi = [
     {
@@ -229,6 +229,9 @@ const updateElectionDisplay = () => {
       <strong>Election:</strong> ${currentElectionName}<br>
       <small>Contract: ${contractAddress.substring(0, 6)}...${contractAddress.substring(38)}</small>
     `;
+    // If a dedicated full-address element exists (homepage), populate it as well
+    const fullEl = document.getElementById('contractFullAddress');
+    if (fullEl) fullEl.textContent = contractAddress;
   }
 };
 
@@ -311,6 +314,7 @@ const connectMetamask = async() => {
       const resultsTableContainer = document.getElementById("resultsTableContainer");
       if (resultsTableContainer) {
         await checkAndDisplayResults();
+        startResultsUpdates();
       }
     }
   } catch (err) {
@@ -319,7 +323,7 @@ const connectMetamask = async() => {
 }
 
 const getCandidateNames = async() => {
-  if(WALLET_CONNECTED != 0) {
+  if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
     var p3 = document.getElementById("p3");
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
@@ -353,12 +357,12 @@ const getCandidateNames = async() => {
   }
   else {
     var p3 = document.getElementById("p3");
-    if (p3) p3.innerHTML = "Please connect metamask first";
+    if (p3 && !p3.innerHTML) p3.innerHTML = "Connect MetaMask to view candidates";
   }
 }
 
 const addVote = async() => {
-    if(WALLET_CONNECTED != 0) {
+    if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         var candidateIndex = document.getElementById("vote");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
@@ -371,17 +375,25 @@ const addVote = async() => {
         cand.innerHTML = "Vote added !!!";
     }
     else {
-        var p3 = document.getElementById("p3");
-        p3.innerHTML = "Please connect metamask first";
+        var cand = document.getElementById("cand");
+        cand.innerHTML = "Please connect MetaMask first";
     }
 }
 
 let votingStatusInterval = null;
+let resultsInterval = null;
 
 const stopVotingStatusUpdates = () => {
   if (votingStatusInterval) {
     clearInterval(votingStatusInterval);
     votingStatusInterval = null;
+  }
+};
+
+const stopResultsUpdates = () => {
+  if (resultsInterval) {
+    clearInterval(resultsInterval);
+    resultsInterval = null;
   }
 };
 
@@ -410,6 +422,8 @@ const startVotingStatusUpdates = async () => {
 if (typeof window !== 'undefined') {
   window.addEventListener('beforeunload', stopVotingStatusUpdates);
   window.addEventListener('pagehide', stopVotingStatusUpdates);
+  window.addEventListener('beforeunload', stopResultsUpdates);
+  window.addEventListener('pagehide', stopResultsUpdates);
 }
 
 if (typeof document !== 'undefined') {
@@ -424,6 +438,12 @@ if (typeof document !== 'undefined') {
         if (basicTable) {
           startVotingStatusUpdates();
         }
+        const resultsTableContainer = typeof document !== 'undefined' ? document.getElementById('resultsTableContainer') : null;
+        if (resultsTableContainer) {
+          startResultsUpdates();
+        }
+        // Refresh election display if present
+        updateElectionDisplay();
       }
     } catch (err) {
       console.error('visibilitychange handler error:', err);
@@ -431,8 +451,56 @@ if (typeof document !== 'undefined') {
   });
 }
 
+// Ensure the current election/contract is shown as soon as the page loads
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    try { 
+      updateElectionDisplay();
+      
+      // Auto-load candidates and status on homepage without requiring MetaMask first
+      const basicTable = document.getElementById('candidatesTable');
+      const statusEl = document.getElementById('status');
+      
+      if (basicTable && statusEl) {
+        // Homepage detected - try to load data if user already connected before
+        if (typeof window.ethereum !== 'undefined') {
+          window.ethereum.request({ method: 'eth_accounts' })
+            .then(accounts => {
+              if (accounts && accounts.length > 0) {
+                // User is already connected, auto-load everything
+                WALLET_CONNECTED = accounts[0];
+                getCandidateNames();
+                startVotingStatusUpdates();
+              }
+            })
+            .catch(err => console.log('No prior wallet connection:', err));
+        }
+      }
+    } catch (e) { /* no-op */ }
+  });
+}
+
+const startResultsUpdates = async () => {
+  // Clean previous interval
+  stopResultsUpdates();
+
+  try {
+    await checkAndDisplayResults();
+  } catch (err) {
+    console.error('Initial results update failed:', err);
+  }
+
+  resultsInterval = setInterval(async () => {
+    try {
+      await checkAndDisplayResults();
+    } catch (err) {
+      console.error('Results interval update failed:', err);
+    }
+  }, 5000);
+};
+
 const checkAndDisplayResults = async() => {
-    if(WALLET_CONNECTED != 0) {
+    if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         var p3 = document.getElementById("p3");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
@@ -464,7 +532,7 @@ const checkAndDisplayResults = async() => {
 }
 
 const voteStatus = async() => {
-    if(WALLET_CONNECTED != 0) {
+    if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         var status = document.getElementById("status");
         var remainingTime = document.getElementById("time");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -472,19 +540,22 @@ const voteStatus = async() => {
         const signer = provider.getSigner();
         const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
         const currentStatus = await contractInstance.getVotingStatus();
-        const time = await contractInstance.getRemainingTime();
-        console.log(time);
+  const time = await contractInstance.getRemainingTime();
+  console.log(time);
         status.innerHTML = currentStatus == 1 ? "Voting is currently open" : "Voting is finished";
-        remainingTime.innerHTML = `Remaining time is ${parseInt(time, 16)} seconds`;
+  const seconds = Number(time.toString());
+  remainingTime.innerHTML = `Remaining time is ${seconds} seconds`;
     }
     else {
         var status = document.getElementById("status");
-        status.innerHTML = "Please connect metamask first";
+        if (status && !status.innerHTML) {
+            status.innerHTML = "Connect MetaMask to view voting status";
+        }
     }
 }
 
 const getAllCandidates = async() => {
-    if(WALLET_CONNECTED != 0) {
+    if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         var p3 = document.getElementById("p3");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         await provider.send("eth_requestAccounts", []);
@@ -509,7 +580,7 @@ const getAllCandidates = async() => {
 
             idCell.innerHTML = i;
             descCell.innerHTML = candidates[i].name;
-            statusCell.innerHTML = candidates[i].voteCount;
+            statusCell.innerHTML = candidates[i].voteCount.toString();
         }
 
         p3.innerHTML = "The tasks are updated"

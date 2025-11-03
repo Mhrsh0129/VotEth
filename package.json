@@ -11,7 +11,9 @@
     "addresses": "node scripts/manage-addresses.js addresses",
     "addresses:latest": "node scripts/manage-addresses.js latest",
     "addresses:list": "node scripts/manage-addresses.js list",
-    "addresses:export": "node scripts/manage-addresses.js export"
+    "addresses:export": "node scripts/manage-addresses.js export",
+    "results:save": "node scripts/save-results.js latest",
+    "results:save:addr": "node scripts/save-results.js"
   },
   "author": "",
   "license": "ISC",

@@ -3,7 +3,7 @@
 **Project:** VotEth - Decentralized Voting DApp (Sepolia)  
 **Repository:** voting-dapp-sepolia  
 **Owner:** Mhrsh0129  
-**Last Updated:** October 31, 2025  
+**Last Updated:** November 3, 2025  
 
 ---
 
@@ -53,6 +53,39 @@
 - ✅ Clean, dedicated Elections page
 - ✅ Improved navigation structure
 - ✅ Better user experience
+
+### Phase 6: Homepage Enhancements & Auto-Loading
+**Date:** October 31, 2025 - November 3, 2025  
+**Status:** ✅ Complete
+
+- ✅ Contract address display on homepage
+- ✅ Full and truncated address views
+- ✅ Auto-load candidates and voting status
+- ✅ Fixed wallet connection checks
+- ✅ Improved user messaging
+- ✅ Auto-detection of prior MetaMask connections
+
+### Phase 7: Results Management & Auto-Saving
+**Date:** November 3, 2025  
+**Status:** ✅ Complete
+
+- ✅ Manual results saving script (`save-results.js`)
+- ✅ NPM commands for results export
+- ✅ Automatic server-side results logger
+- ✅ 10-second polling for vote completion
+- ✅ Block-based duplicate detection
+- ✅ Winner calculation and logging
+- ✅ Results appended to `contract-addresses.txt`
+
+### Phase 8: Real-Time UI Updates
+**Date:** November 3, 2025  
+**Status:** ✅ Complete
+
+- ✅ Auto-refresh voting status every 5 seconds
+- ✅ Auto-refresh results page every 5 seconds
+- ✅ Fixed BigNumber display issues
+- ✅ Proper interval cleanup on page navigation
+- ✅ Background/foreground state management
 
 ---
 
