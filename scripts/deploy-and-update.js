@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 // Function to log contract address to history file
 function logContractAddress(address, candidates, duration) {
@@ -83,6 +84,20 @@ async function main() {
   
   console.log("\n🎉 Deployment and update complete!");
   console.log("📍 Contract Address:", contractAddress);
+  
+  // Auto-commit and push to GitHub for Vercel deployment
+  console.log("\n🔄 Pushing changes to GitHub...");
+  try {
+    execSync('git add .', { stdio: 'inherit' });
+    execSync(`git commit -m "🗳️ Auto-deploy: New election (${contractAddress.substring(0, 8)}...)"`, { stdio: 'inherit' });
+    execSync('git push origin main', { stdio: 'inherit' });
+    console.log("✅ Changes pushed to GitHub - Vercel will auto-deploy!");
+  } catch (error) {
+    console.log("⚠️  Auto-push failed. You may need to manually push:");
+    console.log("   git add .");
+    console.log(`   git commit -m "New election deployment"`);
+    console.log("   git push origin main");
+  }
 }
 
 main()
