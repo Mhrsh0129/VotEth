@@ -326,8 +326,13 @@ const connectMetamask = async() => {
 // Centralized UI update for wallet connection
 const updateWalletConnectionUI = () => {
   const element = document.getElementById("metamasknotification");
-  if (element && WALLET_CONNECTED) {
-    element.innerHTML = "Metamask is connected " + WALLET_CONNECTED;
+  if (element) {
+    if (WALLET_CONNECTED) {
+      const truncated = WALLET_CONNECTED.substring(0, 6) + "..." + WALLET_CONNECTED.substring(38);
+      element.textContent = "Metamask is connected " + truncated;
+    } else {
+      element.textContent = "";
+    }
   }
 };
 
