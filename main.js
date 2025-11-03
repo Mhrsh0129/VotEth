@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0xeb40D8763B817E627BCe443BAE320a11D9Ab34A3";
+let contractAddress = "0xCd4dbade07747AA5B4ABC47AD0C8f184344dD88B";
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let contractAbi = [
     {
