@@ -420,10 +420,14 @@ const startVotingStatusUpdates = async () => {
 
 // Cleanup on navigation/unload/background
 if (typeof window !== 'undefined') {
-  window.addEventListener('beforeunload', stopVotingStatusUpdates);
-  window.addEventListener('pagehide', stopVotingStatusUpdates);
-  window.addEventListener('beforeunload', stopResultsUpdates);
-  window.addEventListener('pagehide', stopResultsUpdates);
+  // Consolidated cleanup handler for all intervals
+  const cleanupAllIntervals = () => {
+    stopVotingStatusUpdates();
+    stopResultsUpdates();
+  };
+  
+  window.addEventListener('beforeunload', cleanupAllIntervals);
+  window.addEventListener('pagehide', cleanupAllIntervals);
 }
 
 if (typeof document !== 'undefined') {
@@ -469,14 +473,33 @@ if (typeof window !== 'undefined') {
               if (accounts && accounts.length > 0) {
                 // User is already connected, auto-load everything
                 WALLET_CONNECTED = accounts[0];
+                
+                // Update UI to show connection status
+                const notificationEl = document.getElementById('metamasknotification');
+                if (notificationEl) {
+                  notificationEl.innerHTML = `✅ Wallet connected: ${WALLET_CONNECTED.substring(0, 6)}...${WALLET_CONNECTED.substring(38)}`;
+                }
+                
+                // Load data
                 getCandidateNames();
                 startVotingStatusUpdates();
+                
+                console.log('Auto-connected to wallet:', WALLET_CONNECTED);
               }
             })
-            .catch(err => console.log('No prior wallet connection:', err));
+            .catch(err => {
+              console.log('No prior wallet connection:', err);
+              // Optionally show a subtle hint to connect
+              const notificationEl = document.getElementById('metamasknotification');
+              if (notificationEl && !notificationEl.innerHTML) {
+                notificationEl.innerHTML = 'Click "Connect Metamask" to get started';
+              }
+            });
         }
       }
-    } catch (e) { /* no-op */ }
+    } catch (e) {
+      console.error('Page load initialization error:', e);
+    }
   });
 }
 

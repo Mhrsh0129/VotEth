@@ -196,6 +196,33 @@
         color: #FFD700;
         }
 
+	/* Contract/Election Display Box */
+	.election-display-box {
+		color: #D3DAD9;
+		max-width: 800px;
+		width: 90%;
+		background-color: #0f1f33;
+		border: 2px solid #FFD700;
+		border-radius: 8px;
+		padding: 16px;
+		text-align: center;
+	}
+
+	.election-display-box strong {
+		font-size: 20px;
+	}
+
+	.contract-address-full {
+		margin-top: 8px;
+		font-size: 12px;
+		color: #9fb3ca;
+	}
+
+	.contract-address-full span:last-child {
+		color: #FFD700;
+		word-break: break-all;
+	}
+
 	</style>
 
 </head>
@@ -215,12 +242,12 @@
 
 	<!-- Current Contract / Election Display -->
 	<div class="container">
-		<div id="currentElectionDisplay" style="color: #D3DAD9; max-width: 800px; width: 90%; background-color: #0f1f33; border: 2px solid #FFD700; border-radius: 8px; padding: 16px; text-align: center;">
-			<strong style="font-size: 20px;">Current Election</strong><br><br>
+		<div id="currentElectionDisplay" class="election-display-box">
+			<strong>Current Election</strong><br><br>
 			<strong>Election:</strong> Current Election<br>
 			<small>Connect wallet to view details</small>
-			<div style="margin-top: 8px; font-size: 12px; color: #9fb3ca;">
-				<span>Contract (full): </span><span id="contractFullAddress" style="color: #FFD700; word-break: break-all;">—</span>
+			<div class="contract-address-full">
+				<span>Contract (full): </span><span id="contractFullAddress">—</span>
 			</div>
 		</div>
 	</div>
