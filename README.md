@@ -11,8 +11,6 @@ VotEth is a simple, time-bound Ethereum voting dApp with a clean dark UI, MetaMa
 
 🚀 **Auto-Deploy:** Every deployment automatically pushes to GitHub and updates the live site via Vercel!
 
-> Branding: This project is branded as VotEth. Add your logo at `assets/branding/logo.png` if desired, and I can wire it into the UI.
-
 ## Features
 
 - Vote for a candidate by index (0-based)
@@ -54,7 +52,6 @@ VotEth is a simple, time-bound Ethereum voting dApp with a clean dark UI, MetaMa
 ### 📚 Complete Documentation
 - All guides combined in one comprehensive document
 - Development timeline with dates
-- See [COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md) for full details
 
 ## Project Structure
 
@@ -149,8 +146,6 @@ This will automatically:
 
 **New:** Changes are automatically pushed to GitHub, triggering Vercel to redeploy your live site at https://vot-eth.vercel.app with the new contract address!
 
-See [COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md) for detailed guides.
-
 ### Manual Setup
 
 1) Install dependencies
@@ -222,14 +217,11 @@ For complete documentation including:
 - Best practices
 - Development timeline
 
-See **[COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md)**
-
 ## Quick Troubleshooting
 
 - Ethers.js not defined: ensure the CDN `<script>` is loaded before `main.js`
 - Wrong network: switch MetaMask to Sepolia
 - Contract address wrong: update `CONTRACT_ADDRESS` in `.env` and ensure `main.js`'s address matches
-- For more help: see [COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md)
 
 ## License
 
@@ -249,4 +241,4 @@ Contributions are welcome! Feel free to:
 - Maintainer: VotEth (Mhrsh0129)
 - Issues/Questions: Open a GitHub Issue on the repository
 
----__
+See **[COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md)**
