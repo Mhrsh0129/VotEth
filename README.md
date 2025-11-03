@@ -7,9 +7,9 @@ VotEth is a simple, time-bound Ethereum voting dApp with a clean dark UI, MetaMa
 - Optional backend: Express.js helpers for admin tasks
 - Network: Sepolia via Alchemy
 
-Live site: https://app.voteth.xyz
+**Live Site:** https://vot-eth.vercel.app
 
-**🚀 Auto-Deploy:** Every deployment automatically pushes to GitHub and updates the live site via Vercel!
+🚀 **Auto-Deploy:** Every deployment automatically pushes to GitHub and updates the live site via Vercel!
 
 > Branding: This project is branded as VotEth. Add your logo at `assets/branding/logo.png` if desired, and I can wire it into the UI.
 
@@ -34,6 +34,7 @@ Live site: https://app.voteth.xyz
 ### 🌐 Vercel Integration & Auto-Deploy
 - **Automatic GitHub Push:** Deployment script now auto-commits and pushes changes
 - **Vercel Auto-Deploy:** Live site updates automatically when you deploy new elections
+- **Auto-Launch Browser:** Opens https://vot-eth.vercel.app after deployment
 - **Zero Manual Steps:** Just run `npm start` and your site updates everywhere!
 
 ### 🎯 Automated Startup System
@@ -144,8 +145,9 @@ This will automatically:
 5. **Auto-commit and push to GitHub** 🆕
 6. **Trigger Vercel auto-deployment** 🆕
 7. Start the Express server
+8. **Open live site in browser** 🆕
 
-**New:** Changes are automatically pushed to GitHub, triggering Vercel to redeploy your live site at `app.voteth.xyz` with the new contract address!
+**New:** Changes are automatically pushed to GitHub, triggering Vercel to redeploy your live site at https://vot-eth.vercel.app with the new contract address!
 
 See [COMPLETE_DOCUMENTATION.md](COMPLETE_DOCUMENTATION.md) for detailed guides.
 

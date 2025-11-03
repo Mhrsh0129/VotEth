@@ -121,7 +121,7 @@ VotEth is a simple, time-bound Ethereum voting DApp with a clean dark UI, MetaMa
 
 ### Live Site
 
-🌐 **https://app.voteth.xyz** (GitHub Pages)
+🌐 **https://vot-eth.vercel.app** (Vercel - Auto-deploys on push)
 
 ### Repository
 
@@ -1626,9 +1626,10 @@ ListVoters.html        # Results page
 
 ```
 Local App:  http://localhost:3000
-Live Site:  https://app.voteth.xyz
+Live Site:  https://vot-eth.vercel.app
 Etherscan:  https://sepolia.etherscan.io
 GitHub:     github.com/Mhrsh0129/voting-dapp-sepolia
+Vercel:     vercel.com (auto-deploys from GitHub)
 ```
 
 ---
