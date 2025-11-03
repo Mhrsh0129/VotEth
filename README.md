@@ -51,7 +51,6 @@ Live site: https://app.voteth.xyz (GitHub Pages)
 
 - `index.html` – Homepage: connect wallet, vote, see status, list candidates
 - `ListVoters.html` – Results page: view voting results
-- `Elections.html` – **NEW:** Dedicated election management page
 - `main.js` – Frontend logic using Ethers + MetaMask
 - `contracts/Voting.sol` – Smart contract (time-limited voting)
 - `scripts/deploy.js` – Hardhat deploy script
@@ -73,11 +72,6 @@ Live site: https://app.voteth.xyz (GitHub Pages)
 - View election results
 - See vote counts
 - Check if voting is ongoing
-
-### 📋 Elections (Elections.html)
-- **NEW:** Dedicated election management
-- Load previous elections by address
-- View elections history
 - Quick switch between elections
 
 ## Useful Commands

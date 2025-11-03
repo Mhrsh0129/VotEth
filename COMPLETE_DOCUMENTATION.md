@@ -45,16 +45,7 @@
 - ✅ JSON export functionality
 - ✅ NPM commands for address management
 
-### Phase 5: Dedicated Elections Page
-**Date:** October 31, 2025  
-**Status:** ✅ Complete
-
-- ✅ Separated election management from homepage
-- ✅ Clean, dedicated Elections page
-- ✅ Improved navigation structure
-- ✅ Better user experience
-
-### Phase 6: Homepage Enhancements & Auto-Loading
+### Phase 5: Homepage Enhancements & Auto-Loading
 **Date:** October 31, 2025 - November 3, 2025  
 **Status:** ✅ Complete
 
@@ -65,7 +56,7 @@
 - ✅ Improved user messaging
 - ✅ Auto-detection of prior MetaMask connections
 
-### Phase 7: Results Management & Auto-Saving
+### Phase 6: Results Management & Auto-Saving
 **Date:** November 3, 2025  
 **Status:** ✅ Complete
 
@@ -77,7 +68,7 @@
 - ✅ Winner calculation and logging
 - ✅ Results appended to `contract-addresses.txt`
 
-### Phase 8: Real-Time UI Updates
+### Phase 7: Real-Time UI Updates
 **Date:** November 3, 2025  
 **Status:** ✅ Complete
 
@@ -87,6 +78,17 @@
 - ✅ Proper interval cleanup on page navigation
 - ✅ Background/foreground state management
 
+### Phase 8: Code Quality & Privacy Enhancements
+**Date:** November 3, 2025  
+**Status:** ✅ Complete
+
+- ✅ Unified wallet connection flow
+- ✅ Centralized UI update functions
+- ✅ Removed inconsistent state management
+- ✅ Proper error logging (no empty catch blocks)
+- ✅ Truncated wallet address display for privacy
+- ✅ Removed dedicated Elections page (simplified UX)
+
 ---
 
 ## 📖 Table of Contents
@@ -94,13 +96,12 @@
 1. [Project Overview](#project-overview)
 2. [Quick Start Guide](#quick-start-guide)
 3. [Features & Functionality](#features--functionality)
-4. [Elections Page Guide](#elections-page-guide)
-5. [Previous Elections Access](#previous-elections-access)
-6. [Contract Address Management](#contract-address-management)
-7. [Command Reference](#command-reference)
-8. [Troubleshooting](#troubleshooting)
-9. [Security & Best Practices](#security--best-practices)
-10. [Contributing & License](#contributing--license)
+4. [Previous Elections Access](#previous-elections-access)
+5. [Contract Address Management](#contract-address-management)
+6. [Command Reference](#command-reference)
+7. [Troubleshooting](#troubleshooting)
+8. [Security & Best Practices](#security--best-practices)
+9. [Contributing & License](#contributing--license)
 
 ---
 
@@ -153,12 +154,7 @@ VotEth is a simple, time-bound Ethereum voting DApp with a clean dark UI, MetaMa
    - Management utilities (list, export, count)
    - Full deployment history
 
-5. **Dedicated Elections Page** ⭐ NEW
-   - Clean separation of concerns
-   - Professional election management
-   - Better UX and navigation
-
-6. **Admin Features**
+5. **Admin Features**
    - Add candidates (via code/CLI only)
    - Secure admin operations
    - No public UI for admin tasks
@@ -171,7 +167,6 @@ VotEth is a simple, time-bound Ethereum voting DApp with a clean dark UI, MetaMa
 voting-dapp-sepolia/
 ├── index.html                      # Vote page - main voting interface
 ├── ListVoters.html                 # Results page - view election results
-├── Elections.html                  # Elections page - manage elections ⭐ NEW
 ├── main.js                         # Frontend logic with Ethers.js
 ├── index.js                        # Optional Express server
 │
@@ -225,20 +220,6 @@ voting-dapp-sepolia/
 - Results display after voting ends
 
 **Target Users:** Everyone
-
----
-
-### 📋 Elections Page (Elections.html) ⭐ NEW
-**Purpose:** Manage multiple elections
-
-**Features:**
-- Load previous elections by address
-- View elections history
-- Quick switch between elections
-- Current election display
-- Help & information
-
-**Target Users:** Power users, administrators
 
 ---
 
@@ -621,230 +602,7 @@ Deploy → Auto-logged → View in file → Copy address → Load in UI
 
 ---
 
-# 4. Elections Page Guide
-
-**Added:** October 31, 2025
-
-## Overview
-
-Dedicated page for managing and switching between different elections. Keeps the main voting page clean while providing powerful management features.
-
-## Navigation
-
-Access from navigation bar on any page:
-```
-Vote | Results | Elections
-```
-
-## Page Layout
-
-```
-┌─────────────────────────────────────────────┐
-│  Navigation Bar                             │
-├─────────────────────────────────────────────┤
-│  📋 Election Management                     │
-│  Connect MetaMask Button                    │
-├─────────────────────────────────────────────┤
-│  Current Election Display                   │
-│  - Election name                            │
-│  - Contract address                         │
-├──────────────────┬──────────────────────────┤
-│  🔄 Load         │  📜 Elections History    │
-│  Previous        │  - Total count           │
-│  Election        │  - Scrollable list       │
-│  - Input field   │  - Quick load buttons    │
-│  - Load button   │  - Auto-refreshes        │
-├──────────────────┴──────────────────────────┤
-│  ℹ️ Information & Help                      │
-│  - Finding addresses                        │
-│  - Data storage                             │
-│  - Security notes                           │
-│  - Feature overview                         │
-└─────────────────────────────────────────────┘
-```
-
-## Features
-
-### 1. Load Previous Election Card
-
-**How to Use:**
-1. Navigate to Elections page
-2. Paste contract address in input field
-3. Click "Load Election"
-4. Name the election (optional)
-5. Election data loads automatically
-
-**What Happens:**
-- Address validated
-- Contract connection established
-- Election data fetched
-- Saved to history
-- UI updates throughout app
-
-### 2. Elections History Card
-
-**Features:**
-- Shows total saved elections count
-- Lists all elections with:
-  - Custom name
-  - Full contract address
-  - Date/time added
-  - Quick "Load" button
-
-**Auto-Updates:**
-- Refreshes every 2 seconds
-- Updates when tab becomes visible
-- Always shows current data
-
-### 3. Current Election Display
-
-**Information:**
-- Election name
-- Contract address (shortened for display)
-- Connection status
-
-**Location:**
-- Top of page
-- Always visible
-- Updates when you switch elections
-
-### 4. Information Section
-
-**Topics Covered:**
-
-📍 **Finding Contract Addresses**
-- Deployment logs
-- contract-addresses.txt file
-- Sepolia Etherscan
-- npm run addresses command
-
-💾 **Data Storage**
-- Up to 20 elections saved
-- Browser localStorage
-- Persists across sessions
-- Auto-managed
-
-🔒 **Security**
-- Read-only on old elections
-- Address validation
-- Sepolia network only
-- MetaMask required
-
-✨ **Features**
-- View past results
-- Compare elections
-- Historical data access
-- Easy sharing
-
-## Benefits
-
-### ✅ Cleaner Homepage
-- Voting page focused on voting
-- No management clutter
-- Better user experience
-
-### ✅ Dedicated Management
-- All features in one place
-- Professional organization
-- Easy to find and use
-
-### ✅ Better UX
-- Clear separation of concerns
-- Intuitive navigation
-- Comprehensive help
-
-### ✅ Scalability
-- Room for future features
-- Easy to expand
-- Organized structure
-
-## Use Cases
-
-### Scenario 1: Switching Between Elections
-
-**Goal:** Switch between multiple active elections
-
-**Steps:**
-1. Go to Elections page
-2. Check elections history
-3. Click "Load" on desired election
-4. Navigate to Vote or Results page
-5. You're now viewing that election
-
-### Scenario 2: Loading New Election
-
-**Goal:** Access an election someone shared with you
-
-**Steps:**
-1. Go to Elections page
-2. Paste contract address in input field
-3. Click "Load Election"
-4. Name it descriptively (e.g., "Community Vote Oct 2025")
-5. It's now in your history for quick access
-
-### Scenario 3: Reviewing Past Elections
-
-**Goal:** Review all your historical elections
-
-**Steps:**
-1. Go to Elections page
-2. Scroll through history list
-3. See all elections with dates
-4. Load any one to view its details
-
-## Tips for Best Use
-
-### 🎯 Naming Elections
-
-**Good names:**
-- ✅ "October 2024 Board Election"
-- ✅ "Q4 Student Council Vote"
-- ✅ "Community Budget Approval 2025"
-
-**Poor names:**
-- ❌ "Election 1"
-- ❌ "Test"
-- ❌ "abc123"
-
-### 📝 Finding Contract Addresses
-
-Multiple sources:
-1. `contract-addresses.txt` file
-2. Run `npm run addresses`
-3. Check deployment console output
-4. Sepolia Etherscan
-5. Ask the deployer
-
-### 🔄 Quick Switching Workflow
-
-```
-Keep Elections page open in one tab
-    ↓
-Switch elections as needed
-    ↓
-Navigate to Vote/Results in another tab
-    ↓
-View data for selected election
-```
-
-## Navigation Flow
-
-```
-Vote Page
-    ↓ Click "Elections"
-Elections Page
-    ↓ Load election
-    ↓ Click "Results"
-Results Page (for that election)
-    ↓ Click "Elections"
-    ↓ Load different election
-    ↓ Click "Vote"
-Vote Page (for new election)
-```
-
----
-
-# 5. Previous Elections Access
+# 4. Previous Elections Access
 
 ## Detailed Feature Guide
 
