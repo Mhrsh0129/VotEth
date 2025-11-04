@@ -98,8 +98,6 @@ async function main() {
   console.log("📍 Contract Address:", contractAddress);
   
   // Auto-commit and push to GitHub for Vercel deployment
-  // TEMPORARILY DISABLED - Uncomment to enable auto-push to Vercel
-  /*
   console.log("\n🔄 Pushing changes to GitHub...");
   try {
     execSync('git add .', { stdio: 'inherit' });
@@ -112,12 +110,6 @@ async function main() {
     console.log(`   git commit -m "New election deployment"`);
     console.log("   git push origin main");
   }
-  */
-  console.log("\n⏸️  Auto-push to GitHub is DISABLED");
-  console.log("📝 To deploy manually, run:");
-  console.log("   git add .");
-  console.log(`   git commit -m "New election deployment"`);
-  console.log("   git push origin main");
 }
 
 main()

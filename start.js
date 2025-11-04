@@ -78,9 +78,9 @@ function startServer() {
       console.log("\n📝 Press Ctrl+C to stop the server");
       console.log("=".repeat(60));
       
-      // Auto-open live website in browser
-      console.log("\n🚀 Opening live website in browser...");
-      await openBrowser('https://vot-eth.vercel.app');
+      // Auto-open browser disabled - uncomment below to re-enable
+      // console.log("\n🚀 Opening live website in browser...");
+      // await openBrowser('https://vot-eth.vercel.app');
       
       resolve(server);
     }, 2000);
