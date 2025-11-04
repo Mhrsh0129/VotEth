@@ -27,12 +27,7 @@ async function loadConfig() {
 // Initialize app - load config then update UI
 async function initializeApp() {
   await loadConfig();
-  // Automatically load candidates if on results page
-  if (window.location.pathname.includes('ListVoters.html')) {
-    getAllCandidates();
-  }
 }
-
 // Call initialization on page load
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initializeApp);
