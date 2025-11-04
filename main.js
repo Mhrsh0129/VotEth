@@ -6,11 +6,14 @@ let configLoaded = false; // Track if config has been loaded
 // Load contract address from config.json
 async function loadConfig() {
   try {
-    const response = await fetch('/config.json');
+    // Add cache-busting timestamp to prevent browser caching
+    const cacheBuster = new Date().getTime();
+    const response = await fetch(`/config.json?v=${cacheBuster}`);
     const config = await response.json();
     contractAddress = config.contractAddress;
     configLoaded = true;
     console.log("✅ Loaded contract address from config:", contractAddress);
+    console.log("📅 Config last updated:", config.lastUpdated);
     
     // Update contract address display if element exists
     const fullEl = document.getElementById("fullContractAddress");
