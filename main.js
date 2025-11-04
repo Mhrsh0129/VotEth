@@ -1,6 +1,7 @@
 let WALLET_CONNECTED = "";
 let contractAddress = "0xFD281d59f11CcCf9706999201707224b53Da0024"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
+let configLoaded = false; // Track if config has been loaded
 
 // Load contract address from config.json
 async function loadConfig() {
@@ -8,14 +9,36 @@ async function loadConfig() {
     const response = await fetch('/config.json');
     const config = await response.json();
     contractAddress = config.contractAddress;
+    configLoaded = true;
     console.log("✅ Loaded contract address from config:", contractAddress);
+    
+    // Update contract address display if element exists
+    const fullEl = document.getElementById("fullContractAddress");
+    if (fullEl) fullEl.textContent = contractAddress;
+    
+    return config;
   } catch (error) {
     console.warn("⚠️ Failed to load config.json, using fallback address:", error);
+    configLoaded = true; // Mark as loaded even if failed, to not block operations
+    return null;
   }
 }
 
-// Load config on page load
-loadConfig();
+// Initialize app - load config then update UI
+async function initializeApp() {
+  await loadConfig();
+  // Automatically load candidates if on results page
+  if (window.location.pathname.includes('ListVoters.html')) {
+    getAllCandidates();
+  }
+}
+
+// Call initialization on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  initializeApp();
+}
 
 // Network configuration
 const SEPOLIA_CHAIN_ID = 11155111; // Sepolia testnet
@@ -402,6 +425,11 @@ const updateWalletConnectionUI = () => {
 const getCandidateNames = async() => {
   var p3 = document.getElementById("p3");
   
+  // Wait for config to load
+  if (!configLoaded) {
+    await loadConfig();
+  }
+  
   if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
     try {
       p3.innerHTML = '⏳ Loading candidates<span class="spinner"></span>';
@@ -453,6 +481,11 @@ const getCandidateNames = async() => {
 }
 
 const addVote = async() => {
+    // Wait for config to load
+    if (!configLoaded) {
+        await loadConfig();
+    }
+    
     if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         var candidateIndexInput = document.getElementById("vote");
         var cand = document.getElementById("cand");
@@ -678,6 +711,11 @@ const startResultsUpdates = async () => {
 const checkAndDisplayResults = async() => {
     var p3 = document.getElementById("p3");
     
+    // Wait for config to load
+    if (!configLoaded) {
+        await loadConfig();
+    }
+    
     if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         try {
             const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -719,6 +757,11 @@ const checkAndDisplayResults = async() => {
 }
 
 const voteStatus = async() => {
+    // Wait for config to load
+    if (!configLoaded) {
+        await loadConfig();
+    }
+    
     if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         var status = document.getElementById("status");
         var remainingTime = document.getElementById("time");
@@ -742,6 +785,11 @@ const voteStatus = async() => {
 }
 
 const getAllCandidates = async() => {
+    // Wait for config to load
+    if (!configLoaded) {
+        await loadConfig();
+    }
+    
     if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         var p3 = document.getElementById("p3");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
