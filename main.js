@@ -3,6 +3,49 @@ let contractAddress = "0x38B18Ea22E36B4a6cAd43AB2c7a32FB68f4d50df"; // Default f
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
 
+// ========================================
+// THEME SWITCHING FUNCTIONALITY
+// ========================================
+function toggleTheme() {
+  const body = document.body;
+  const themeIcon = document.getElementById('themeIcon');
+  const themeText = document.getElementById('themeText');
+  
+  body.classList.toggle('light-theme');
+  
+  // Update icon and text
+  if (body.classList.contains('light-theme')) {
+    themeIcon.textContent = '☀️';
+    themeText.textContent = 'Light';
+    localStorage.setItem('theme', 'light');
+  } else {
+    themeIcon.textContent = '🌙';
+    themeText.textContent = 'Dark';
+    localStorage.setItem('theme', 'dark');
+  }
+}
+
+// Load saved theme preference on page load
+function loadSavedTheme() {
+  const savedTheme = localStorage.getItem('theme');
+  const body = document.body;
+  const themeIcon = document.getElementById('themeIcon');
+  const themeText = document.getElementById('themeText');
+  
+  if (savedTheme === 'light') {
+    body.classList.add('light-theme');
+    if (themeIcon) themeIcon.textContent = '☀️';
+    if (themeText) themeText.textContent = 'Light';
+  }
+}
+
+// Load theme as soon as possible
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadSavedTheme);
+} else {
+  loadSavedTheme();
+}
+
 // Load contract address from config.json
 async function loadConfig() {
   try {

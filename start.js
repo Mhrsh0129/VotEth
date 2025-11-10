@@ -1,6 +1,7 @@
 const { spawn, execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const readline = require('readline');
 
 // Dynamic import for ESM module
 let open;
@@ -12,6 +13,35 @@ console.log("=".repeat(60));
 console.log("🎯 VOTING DAPP - AUTOMATIC STARTUP");
 console.log("=".repeat(60));
 console.log("");
+
+// Function to prompt user for election duration
+function promptElectionDuration() {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+    
+    rl.question('⏱️  Enter election duration in minutes (press Enter for default 2 minutes): ', (answer) => {
+      rl.close();
+      
+      const duration = answer.trim();
+      if (duration === '') {
+        console.log('✅ Using default duration: 2 minutes\n');
+        resolve(2);
+      } else {
+        const parsed = parseInt(duration);
+        if (isNaN(parsed) || parsed <= 0) {
+          console.log('⚠️  Invalid input. Using default: 2 minutes\n');
+          resolve(2);
+        } else {
+          console.log(`✅ Election duration set to: ${parsed} minutes\n`);
+          resolve(parsed);
+        }
+      }
+    });
+  });
+}
 
 // Function to run a command and wait for it to complete
 function runCommand(command, args, cwd = __dirname) {
@@ -100,11 +130,14 @@ async function start() {
     console.log("\n🔨 Compiling smart contracts...");
     await runCommand('npx', ['hardhat', 'compile']);
     
-    // Step 3: Deploy contract and update addresses
-    console.log("\n🚀 Deploying contract and updating addresses...");
-    await runCommand('npx', ['hardhat', 'run', 'scripts/deploy-and-update.js', '--network', 'sepolia']);
+    // Step 3: Prompt for election duration
+    const duration = await promptElectionDuration();
     
-    // Step 4: Start the server
+    // Step 4: Deploy contract and update addresses with custom duration
+    console.log("\n🚀 Deploying contract and updating addresses...");
+    await runCommand('npx', ['hardhat', 'run', 'scripts/deploy-and-update.js', '--network', 'sepolia', `--duration=${duration}`]);
+    
+    // Step 5: Start the server
     await startServer();
     
   } catch (error) {

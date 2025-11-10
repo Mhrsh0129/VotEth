@@ -28,12 +28,18 @@ ${'='.repeat(80)}
 async function main() {
   console.log("🚀 Starting deployment process...\n");
   
+  // Get duration from command line args or use default
+  const args = process.argv.slice(2);
+  const durationArg = args.find(arg => arg.startsWith('--duration='));
+  const duration = durationArg ? parseInt(durationArg.split('=')[1]) : 2;
+  
+  console.log(`📅 Election duration: ${duration} minutes\n`);
+  
   // Deploy the contract
   const Voting = await ethers.getContractFactory("Voting");
   console.log("📝 Deploying Voting contract...");
   
   const candidates = ["BJP", "NDA", "AAP", "BSPA", "INC"];
-  const duration = 2;
   
   const Voting_ = await Voting.deploy(candidates, duration);
   await Voting_.deployed();
