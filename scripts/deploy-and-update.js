@@ -28,10 +28,23 @@ ${'='.repeat(80)}
 async function main() {
   console.log("🚀 Starting deployment process...\n");
   
-  // Get duration from command line args or use default
+  // Get duration from command line args with validation
   const args = process.argv.slice(2);
   const durationArg = args.find(arg => arg.startsWith('--duration='));
-  const duration = durationArg ? parseInt(durationArg.split('=')[1]) : 2;
+  let duration = 2; // Default value
+  
+  if (durationArg) {
+    const parsedDuration = parseInt(durationArg.split('=')[1], 10);
+    
+    if (Number.isInteger(parsedDuration) && parsedDuration > 0) {
+      duration = parsedDuration;
+    } else {
+      console.error(`❌ Error: Invalid duration value "${durationArg.split('=')[1]}"`);
+      console.error("   Duration must be a positive integer (> 0)");
+      console.error("   Example: --duration=5");
+      process.exit(1);
+    }
+  }
   
   console.log(`📅 Election duration: ${duration} minutes\n`);
   

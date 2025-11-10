@@ -30,13 +30,13 @@ function promptElectionDuration() {
         console.log('✅ Using default duration: 2 minutes\n');
         resolve(2);
       } else {
-        const parsed = parseInt(duration);
-        if (isNaN(parsed) || parsed <= 0) {
-          console.log('⚠️  Invalid input. Using default: 2 minutes\n');
-          resolve(2);
-        } else {
+        const parsed = parseInt(duration, 10);
+        if (Number.isInteger(parsed) && parsed > 0) {
           console.log(`✅ Election duration set to: ${parsed} minutes\n`);
           resolve(parsed);
+        } else {
+          console.log('⚠️  Invalid input (must be a positive integer). Using default: 2 minutes\n');
+          resolve(2);
         }
       }
     });
