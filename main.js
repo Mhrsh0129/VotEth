@@ -36,6 +36,11 @@ function loadSavedTheme() {
     body.classList.add('light-theme');
     if (themeIcon) themeIcon.textContent = '☀️';
     if (themeText) themeText.textContent = 'Light';
+  } else {
+    // Dark theme (default or explicitly saved)
+    body.classList.remove('light-theme');
+    if (themeIcon) themeIcon.textContent = '🌙';
+    if (themeText) themeText.textContent = 'Dark';
   }
 }
 
