@@ -14,6 +14,10 @@ console.log("🎯 VOTING DAPP - AUTOMATIC STARTUP");
 console.log("=".repeat(60));
 console.log("");
 
+// Constants
+const DEFAULT_DURATION = 2; // minutes
+const MAX_DURATION = 525600; // 1 year in minutes (365 days)
+
 // Function to prompt user for election duration
 function promptElectionDuration() {
   return new Promise((resolve) => {
@@ -22,23 +26,44 @@ function promptElectionDuration() {
       output: process.stdout
     });
     
-    rl.question('⏱️  Enter election duration in minutes (press Enter for default 2 minutes): ', (answer) => {
+    // Handle readline errors
+    rl.on('error', (err) => {
+      console.error('⚠️  Error reading input:', err.message);
+      console.log(`✅ Using default duration: ${DEFAULT_DURATION} minutes\n`);
+      resolve(DEFAULT_DURATION);
+    });
+    
+    rl.question(`⏱️  Enter election duration in minutes (1-${MAX_DURATION}, default ${DEFAULT_DURATION}): `, (answer) => {
       rl.close();
       
       const duration = answer.trim();
+      
+      // Empty input - use default
       if (duration === '') {
-        console.log('✅ Using default duration: 2 minutes\n');
-        resolve(2);
-      } else {
-        const parsed = parseInt(duration, 10);
-        if (Number.isInteger(parsed) && parsed > 0) {
-          console.log(`✅ Election duration set to: ${parsed} minutes\n`);
-          resolve(parsed);
-        } else {
-          console.log('⚠️  Invalid input (must be a positive integer). Using default: 2 minutes\n');
-          resolve(2);
-        }
+        console.log(`✅ Using default duration: ${DEFAULT_DURATION} minutes\n`);
+        resolve(DEFAULT_DURATION);
+        return;
       }
+      
+      // Validate input format - must be digits only
+      if (!/^\d+$/.test(duration)) {
+        console.log(`⚠️  Invalid input format (must contain only digits). Using default: ${DEFAULT_DURATION} minutes\n`);
+        resolve(DEFAULT_DURATION);
+        return;
+      }
+      
+      // Parse to number after regex validation
+      const parsed = parseInt(duration, 10);
+      
+      // Validate range
+      if (!Number.isInteger(parsed) || parsed < 1 || parsed > MAX_DURATION) {
+        console.log(`⚠️  Invalid duration (must be between 1 and ${MAX_DURATION} minutes). Using default: ${DEFAULT_DURATION} minutes\n`);
+        resolve(DEFAULT_DURATION);
+        return;
+      }
+      
+      console.log(`✅ Election duration set to: ${parsed} minutes\n`);
+      resolve(parsed);
     });
   });
 }
