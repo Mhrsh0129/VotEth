@@ -13,14 +13,14 @@ function toggleTheme() {
   
   body.classList.toggle('light-theme');
   
-  // Update icon and text
+  // Update icon and text with null checks
   if (body.classList.contains('light-theme')) {
-    themeIcon.textContent = '☀️';
-    themeText.textContent = 'Light';
+    if (themeIcon) themeIcon.textContent = '☀️';
+    if (themeText) themeText.textContent = 'Light';
     localStorage.setItem('theme', 'light');
   } else {
-    themeIcon.textContent = '🌙';
-    themeText.textContent = 'Dark';
+    if (themeIcon) themeIcon.textContent = '🌙';
+    if (themeText) themeText.textContent = 'Dark';
     localStorage.setItem('theme', 'dark');
   }
 }
