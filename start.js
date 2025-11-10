@@ -69,7 +69,7 @@ function promptElectionDuration() {
 }
 
 // Function to run a command and wait for it to complete
-function runCommand(command, args, cwd = __dirname) {
+function runCommand(command, args, cwd = __dirname, env = {}) {
   return new Promise((resolve, reject) => {
     console.log(`\n▶️  Running: ${command} ${args.join(' ')}`);
     console.log("-".repeat(60));
@@ -77,7 +77,8 @@ function runCommand(command, args, cwd = __dirname) {
     const child = spawn(command, args, {
       cwd: cwd,
       shell: true,
-      stdio: 'inherit'
+      stdio: 'inherit',
+      env: { ...process.env, ...env }
     });
     
     child.on('close', (code) => {
@@ -160,7 +161,7 @@ async function start() {
     
     // Step 4: Deploy contract and update addresses with custom duration
     console.log("\n🚀 Deploying contract and updating addresses...");
-    await runCommand('npx', ['hardhat', 'run', 'scripts/deploy-and-update.js', '--network', 'sepolia', `--duration=${duration}`]);
+    await runCommand('npx', ['hardhat', 'run', 'scripts/deploy-and-update.js', '--network', 'sepolia'], __dirname, { ELECTION_DURATION: duration.toString() });
     
     // Step 5: Start the server
     await startServer();

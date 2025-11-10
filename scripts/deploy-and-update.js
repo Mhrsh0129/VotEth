@@ -28,11 +28,13 @@ ${'='.repeat(80)}
 async function main() {
   console.log("🚀 Starting deployment process...\n");
   
-  // Get duration from command line args with validation
+  // Get duration from environment variable or command line args with validation
   const args = process.argv.slice(2);
   const durationArg = args.find(arg => arg.startsWith('--duration='));
+  const envDuration = process.env.ELECTION_DURATION;
   let duration = 2; // Default value
   
+  // Priority: command-line arg > environment variable > default
   if (durationArg) {
     const parsedDuration = parseInt(durationArg.split('=')[1], 10);
     
@@ -42,6 +44,16 @@ async function main() {
       console.error(`❌ Error: Invalid duration value "${durationArg.split('=')[1]}"`);
       console.error("   Duration must be a positive integer (> 0)");
       console.error("   Example: --duration=5");
+      process.exit(1);
+    }
+  } else if (envDuration) {
+    const parsedDuration = parseInt(envDuration, 10);
+    
+    if (Number.isInteger(parsedDuration) && parsedDuration > 0) {
+      duration = parsedDuration;
+    } else {
+      console.error(`❌ Error: Invalid ELECTION_DURATION environment variable "${envDuration}"`);
+      console.error("   Duration must be a positive integer (> 0)");
       process.exit(1);
     }
   }
