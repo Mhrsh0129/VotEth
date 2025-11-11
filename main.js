@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0xaF76faFB74eE3C72B7Cc9205Bde15860edBeed57"; // Default fallback
+let contractAddress = "0xa45dB4641f86d3947C196A9505de2Db43fd8adE7"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
 let web3Modal = null; // Web3Modal instance
@@ -448,7 +448,8 @@ const switchContractManual = async() => {
   input.value = ""; // Clear input
 };
 
-const connectMetamask = async() => {
+// Make function globally accessible for HTML onclick handlers
+window.connectMetamask = async() => {
   try {
     // Initialize Web3Modal if not done
     if (!web3Modal) {
@@ -562,7 +563,7 @@ const connectMetamask = async() => {
 }
 
 // New function to disconnect wallet
-const disconnectWallet = async() => {
+window.disconnectWallet = async() => {
   try {
     // Remove event listeners to prevent memory leaks
     if (provider) {
@@ -616,7 +617,8 @@ const updateWalletConnectionUI = () => {
   }
 };
 
-const getCandidateNames = async() => {
+// Make globally accessible for HTML onclick
+window.getCandidateNames = async() => {
   var p3 = document.getElementById("p3");
   
   // Check if wallet is connected first
@@ -682,7 +684,8 @@ const getCandidateNames = async() => {
   }
 }
 
-const addVote = async() => {
+// Make globally accessible for HTML onclick
+window.addVote = async() => {
     // Wait for config to load
     if (!configLoaded) {
         await loadConfig();
