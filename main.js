@@ -455,13 +455,19 @@ const connectMetamask = async() => {
     // Connect wallet - shows modal with multiple wallet options
     provider = await web3Modal.connect();
     
-    // Detect wallet type
-    if (provider.isMetaMask) {
+    // Detect wallet type with comprehensive checks
+    if (provider.isPhantom) {
+      walletType = "Phantom";
+    } else if (provider.isMetaMask && !provider.isPhantom) {
       walletType = "MetaMask";
     } else if (provider.isWalletConnect) {
       walletType = "WalletConnect";
     } else if (provider.isCoinbaseWallet) {
       walletType = "Coinbase Wallet";
+    } else if (provider.isBraveWallet) {
+      walletType = "Brave Wallet";
+    } else if (provider.isTrust) {
+      walletType = "Trust Wallet";
     } else {
       walletType = "Web3 Wallet";
     }
