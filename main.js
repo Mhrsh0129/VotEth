@@ -1,20 +1,23 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0xC8961b986AE79EbFA60751c5fCA7948E667b06A4"; // Default fallback
+let contractAddress = "0xaF76faFB74eE3C72B7Cc9205Bde15860edBeed57"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
 let web3Modal = null; // Web3Modal instance
 let provider = null; // Current provider
 let walletType = ""; // Track wallet type
 
-// ========================================
-// WEB3MODAL MULTI-WALLET SETUP
-// ========================================
+// Event handler references for cleanup
+let accountsChangedHandler = null;
+let chainChangedHandler = null;
+let connectHandler = null;
+let disconnectHandler = null;
+
 function initWeb3Modal() {
   const providerOptions = {
     walletconnect: {
       package: window.WalletConnectProvider.default,
       options: {
-        infuraId: "8043bb2cf99347b1bfadfb233c5325c0", // Public Infura ID for WalletConnect
+        infuraId: process.env.INFURA_ID || "", // Load from environment
         rpc: {
           11155111: "https://sepolia.infura.io/v3/8043bb2cf99347b1bfadfb233c5325c0"
         },
@@ -522,30 +525,33 @@ const connectMetamask = async() => {
       console.error("Failed to auto-load candidates:", err);
     }
 
-    // Subscribe to accounts change
-    provider.on("accountsChanged", (accounts) => {
+    // Define event handlers for proper cleanup
+    accountsChangedHandler = (accounts) => {
       if (accounts.length === 0) {
         disconnectWallet();
       } else {
         window.location.reload();
       }
-    });
+    };
 
-    // Subscribe to chainId change
-    provider.on("chainChanged", (chainId) => {
+    chainChangedHandler = (chainId) => {
       window.location.reload();
-    });
+    };
 
-    // Subscribe to provider connection
-    provider.on("connect", (info) => {
+    connectHandler = (info) => {
       console.log("Provider connected:", info);
-    });
+    };
 
-    // Subscribe to provider disconnection
-    provider.on("disconnect", (error) => {
+    disconnectHandler = (error) => {
       console.log("Provider disconnected:", error);
       disconnectWallet();
-    });
+    };
+
+    // Subscribe to provider events
+    provider.on("accountsChanged", accountsChangedHandler);
+    provider.on("chainChanged", chainChangedHandler);
+    provider.on("connect", connectHandler);
+    provider.on("disconnect", disconnectHandler);
 
   } catch (error) {
     console.error("Wallet connection error:", error);
@@ -557,14 +563,42 @@ const connectMetamask = async() => {
 
 // New function to disconnect wallet
 const disconnectWallet = async() => {
-  if (web3Modal) {
-    await web3Modal.clearCachedProvider();
+  try {
+    // Remove event listeners to prevent memory leaks
+    if (provider) {
+      if (accountsChangedHandler) {
+        provider.removeListener("accountsChanged", accountsChangedHandler);
+      }
+      if (chainChangedHandler) {
+        provider.removeListener("chainChanged", chainChangedHandler);
+      }
+      if (connectHandler) {
+        provider.removeListener("connect", connectHandler);
+      }
+      if (disconnectHandler) {
+        provider.removeListener("disconnect", disconnectHandler);
+      }
+    }
+
+    // Clear Web3Modal cache
+    if (web3Modal) {
+      await web3Modal.clearCachedProvider();
+    }
+
+    // Reset all state
+    provider = null;
+    WALLET_CONNECTED = "";
+    walletType = "";
+    accountsChangedHandler = null;
+    chainChangedHandler = null;
+    connectHandler = null;
+    disconnectHandler = null;
+
+    updateWalletConnectionUI();
+    console.log("🔌 Wallet disconnected and event listeners cleaned up");
+  } catch (error) {
+    console.error("Error during wallet disconnect:", error);
   }
-  provider = null;
-  WALLET_CONNECTED = "";
-  walletType = "";
-  updateWalletConnectionUI();
-  console.log("🔌 Wallet disconnected");
 }
 
 // Centralized UI update for wallet connection
