@@ -21,13 +21,13 @@
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@nomiclabs/hardhat-ethers": "^2.2.2",
-    "@walletconnect/ethereum-provider": "^2.23.0",
-    "dotenv": "^16.0.3",
+    "@walletconnect/ethereum-provider": "^2.16.1",
+    "dotenv": "^16.4.5",
     "ethers": "^5.8.0",
-    "express": "^4.18.2",
-    "express-fileupload": "^1.4.0",
+    "express": "^4.21.1",
+    "express-fileupload": "^1.5.1",
     "express-rate-limit": "^8.2.1",
-    "hardhat": "^2.13.0",
+    "hardhat": "^2.22.17",
     "open": "^10.2.0",
     "path": "^0.12.7",
     "web3modal": "^1.9.12"
