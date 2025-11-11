@@ -4,6 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>VotEth — Results</title>
+	<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🗳️</text></svg>">
+    
     <!-- Ethers.js v5.7.2 - Core Ethereum library -->
     <script 
         src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"
@@ -11,21 +13,8 @@
         crossorigin="anonymous">
     </script>
     
-    <!-- Web3Modal v1.9.12 (DEPRECATED - Upgrade to @reown/appkit recommended) -->
-    <script 
-        src="https://cdn.jsdelivr.net/npm/web3modal@1.9.12/dist/index.js"
-        integrity="sha384-TbYSYCHADKiTCFDe5uKS11Aj4jYTRwk3wJB7Si5456nWYsj5MMYg1Zs+1Hfj3Y0W"
-        crossorigin="anonymous">
-    </script>
-    
-    <!-- WalletConnect Web3 Provider v1.8.0 (DEPRECATED - Upgrade to v2+ recommended) -->
-    <script 
-        src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"
-        integrity="sha384-qAwXA+e+JYGPHyYN36p8e2c7XtwEWenUqh6Zma7WqNLstmV4EvSbJ7jUgIROdLPF"
-        crossorigin="anonymous">
-    </script>
-    
-    <script src="main.js"></script>
+    <!-- Main application script - deferred to load after DOM -->
+    <script src="main.js" defer></script>
 	<style>
 		/* ========================================
 		   CSS VARIABLES FOR THEME SWITCHING

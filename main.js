@@ -1,8 +1,7 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x12A2706bEA9D2e7CefE6E61D250f765A625B133C"; // Default fallback
+let contractAddress = "0xcB51bCADb625f822Bb0433b2f4C7cA110876dfe7"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
-let web3Modal = null; // Web3Modal instance
 let provider = null; // Current provider
 let walletType = ""; // Track wallet type
 
@@ -11,39 +10,6 @@ let accountsChangedHandler = null;
 let chainChangedHandler = null;
 let connectHandler = null;
 let disconnectHandler = null;
-
-function initWeb3Modal() {
-  const providerOptions = {
-    walletconnect: {
-      package: window.WalletConnectProvider.default,
-      options: {
-        infuraId: process.env.INFURA_ID || "", // Load from environment
-        rpc: {
-          11155111: "https://sepolia.infura.io/v3/8043bb2cf99347b1bfadfb233c5325c0"
-        },
-        chainId: 11155111
-      }
-    }
-  };
-
-  web3Modal = new window.Web3Modal({
-    network: "sepolia",
-    cacheProvider: true,
-    providerOptions,
-    theme: {
-      background: "#132440",
-      main: "#ffffff",
-      secondary: "#FFD700",
-      border: "#1a3a5c",
-      hover: "#FFD700"
-    }
-  });
-}
-
-// Initialize Web3Modal on page load
-if (typeof window.Web3Modal !== 'undefined') {
-  initWeb3Modal();
-}
 
 // ========================================
 // THEME SWITCHING FUNCTIONALITY
@@ -451,21 +417,43 @@ const switchContractManual = async() => {
 // Make function globally accessible for HTML onclick handlers
 window.connectMetamask = async() => {
   try {
-    // Initialize Web3Modal if not done
-    if (!web3Modal) {
-      initWeb3Modal();
+    // Wait a moment for providers to initialize
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Check multiple provider locations for Phantom
+    let ethereumProvider = null;
+    
+    // Priority 1: Check window.phantom.ethereum (Phantom's Ethereum provider)
+    if (window.phantom?.ethereum) {
+      ethereumProvider = window.phantom.ethereum;
+      console.log("Found Phantom Ethereum provider");
+    }
+    // Priority 2: Check standard window.ethereum
+    else if (window.ethereum) {
+      ethereumProvider = window.ethereum;
+      console.log("Found standard Ethereum provider");
+    }
+    // Priority 3: Check if Phantom Solana is available (guide user)
+    else if (window.phantom?.solana) {
+      alert("❌ Phantom detected, but Ethereum is not active!\n\nSteps to fix:\n1. Make sure Ethereum toggle is ON in Phantom settings\n2. Close and re-open your browser completely\n3. Come back to this page\n\nIf problem persists, try MetaMask instead.");
+      return;
+    }
+    // No provider found
+    else {
+      alert("❌ No Ethereum wallet detected!\n\nPlease install one of these:\n• MetaMask (metamask.io) - Recommended\n• Phantom (phantom.app)\n• Coinbase Wallet\n• Brave Browser Wallet\n\nAfter installing, refresh this page.");
+      return;
     }
 
-    // Connect wallet - shows modal with multiple wallet options
-    provider = await web3Modal.connect();
+    // Use the detected provider
+    provider = ethereumProvider;
     
-    // Detect wallet type with comprehensive checks
-    if (provider.isPhantom) {
+    // Detect wallet type
+    if (window.phantom?.ethereum && provider === window.phantom.ethereum) {
+      walletType = "Phantom";
+    } else if (provider.isPhantom) {
       walletType = "Phantom";
     } else if (provider.isMetaMask && !provider.isPhantom) {
       walletType = "MetaMask";
-    } else if (provider.isWalletConnect) {
-      walletType = "WalletConnect";
     } else if (provider.isCoinbaseWallet) {
       walletType = "Coinbase Wallet";
     } else if (provider.isBraveWallet) {
@@ -476,6 +464,11 @@ window.connectMetamask = async() => {
       walletType = "Web3 Wallet";
     }
 
+    console.log(`Attempting to connect with ${walletType}...`);
+
+    // Request account access
+    await provider.request({ method: 'eth_requestAccounts' });
+
     // Create ethers provider
     const ethersProvider = new ethers.providers.Web3Provider(provider);
     
@@ -484,7 +477,7 @@ window.connectMetamask = async() => {
     if (network.chainId !== 11155111) {
       alert(`⚠️ Wrong Network!\n\nPlease switch to Sepolia testnet in your wallet.\n\nCurrent: ${network.name}\nRequired: Sepolia`);
       
-      // Try to switch network (works with some wallets)
+      // Try to switch network
       try {
         await provider.request({
           method: 'wallet_switchEthereumChain',
@@ -579,11 +572,6 @@ window.disconnectWallet = async() => {
       if (disconnectHandler) {
         provider.removeListener("disconnect", disconnectHandler);
       }
-    }
-
-    // Clear Web3Modal cache
-    if (web3Modal) {
-      await web3Modal.clearCachedProvider();
     }
 
     // Reset all state
