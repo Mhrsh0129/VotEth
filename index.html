@@ -183,11 +183,18 @@
 			background-color: #1a2f4a;
 			font-family: Arial;
 			box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding-right: 10px;
+		}
+
+		.navbar-links {
+			display: flex;
 		}
 
 		/* Style the links inside the navigation bar */
 		.navbar a {
-			float: left;
 			display: block;
 			color: white;
 			text-align: center;
@@ -292,21 +299,18 @@
 	   THEME TOGGLE BUTTON
 	   ======================================== */
 	.theme-toggle {
-		position: fixed;
-		top: 20px;
-		right: 20px;
 		background-color: var(--card-bg);
 		border: 2px solid var(--border-color);
 		border-radius: 50px;
-		padding: 10px 20px;
+		padding: 8px 16px;
 		cursor: pointer;
 		display: flex;
 		align-items: center;
 		gap: 8px;
-		font-size: 16px;
-		z-index: 1000;
+		font-size: 14px;
 		transition: all 0.3s ease;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+		margin-right: 10px;
 	}
 
 	.theme-toggle:hover {
@@ -404,15 +408,16 @@
 
 </head>
 <body>
-	<!-- Theme Toggle Button -->
-	<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-		<span class="theme-icon" id="themeIcon">🌙</span>
-		<span id="themeText">Dark</span>
-	</button>
-
     <div class = "navbar">
-        <a href="/index.html">Vote</a>
-        <a href="/ListVoters.html">Results</a>
+		<div class="navbar-links">
+			<a href="/index.html">Vote</a>
+			<a href="/ListVoters.html">Results</a>
+		</div>
+		<!-- Theme Toggle Button -->
+		<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+			<span class="theme-icon" id="themeIcon">🌙</span>
+			<span id="themeText">Dark</span>
+		</button>
     </div>
 
 	<div class="container">Welcome to VotEth — Decentralized Voting</div>
