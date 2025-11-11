@@ -2,6 +2,45 @@ let WALLET_CONNECTED = "";
 let contractAddress = "0xC8961b986AE79EbFA60751c5fCA7948E667b06A4"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
+let web3Modal = null; // Web3Modal instance
+let provider = null; // Current provider
+let walletType = ""; // Track wallet type
+
+// ========================================
+// WEB3MODAL MULTI-WALLET SETUP
+// ========================================
+function initWeb3Modal() {
+  const providerOptions = {
+    walletconnect: {
+      package: window.WalletConnectProvider.default,
+      options: {
+        infuraId: "8043bb2cf99347b1bfadfb233c5325c0", // Public Infura ID for WalletConnect
+        rpc: {
+          11155111: "https://sepolia.infura.io/v3/8043bb2cf99347b1bfadfb233c5325c0"
+        },
+        chainId: 11155111
+      }
+    }
+  };
+
+  web3Modal = new window.Web3Modal({
+    network: "sepolia",
+    cacheProvider: true,
+    providerOptions,
+    theme: {
+      background: "#132440",
+      main: "#ffffff",
+      secondary: "#FFD700",
+      border: "#1a3a5c",
+      hover: "#FFD700"
+    }
+  });
+}
+
+// Initialize Web3Modal on page load
+if (typeof window.Web3Modal !== 'undefined') {
+  initWeb3Modal();
+}
 
 // ========================================
 // THEME SWITCHING FUNCTIONALITY
@@ -407,16 +446,51 @@ const switchContractManual = async() => {
 };
 
 const connectMetamask = async() => {
-    // Check network first
-    const isCorrectNetwork = await checkNetwork();
-    if (!isCorrectNetwork) {
-      return; // Stop if wrong network
+  try {
+    // Initialize Web3Modal if not done
+    if (!web3Modal) {
+      initWeb3Modal();
+    }
+
+    // Connect wallet - shows modal with multiple wallet options
+    provider = await web3Modal.connect();
+    
+    // Detect wallet type
+    if (provider.isMetaMask) {
+      walletType = "MetaMask";
+    } else if (provider.isWalletConnect) {
+      walletType = "WalletConnect";
+    } else if (provider.isCoinbaseWallet) {
+      walletType = "Coinbase Wallet";
+    } else {
+      walletType = "Web3 Wallet";
+    }
+
+    // Create ethers provider
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
+    
+    // Check network
+    const network = await ethersProvider.getNetwork();
+    if (network.chainId !== 11155111) {
+      alert(`⚠️ Wrong Network!\n\nPlease switch to Sepolia testnet in your wallet.\n\nCurrent: ${network.name}\nRequired: Sepolia`);
+      
+      // Try to switch network (works with some wallets)
+      try {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0xaa36a7' }], // Sepolia chainId in hex
+        });
+      } catch (switchError) {
+        console.error("Failed to switch network:", switchError);
+        return;
+      }
     }
     
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
+    // Get signer and address
+    const signer = ethersProvider.getSigner();
     WALLET_CONNECTED = await signer.getAddress();
+    
+    console.log(`✅ Connected with ${walletType}:`, WALLET_CONNECTED);
     
     // Update UI notification
     updateWalletConnectionUI();
@@ -424,23 +498,67 @@ const connectMetamask = async() => {
     // Update election display on connect
     updateElectionDisplay();
 
-  // Auto-refresh candidates list on pages that have the table
-  try {
-    const basicTable = document.getElementById("candidatesTable");
-    if (basicTable) {
-      await getCandidateNames();
-      // Start auto-updating voting status on homepage
-      startVotingStatusUpdates();
-    } else {
-      const resultsTableContainer = document.getElementById("resultsTableContainer");
-      if (resultsTableContainer) {
-        await checkAndDisplayResults();
-        startResultsUpdates();
+    // Auto-refresh candidates list on pages that have the table
+    try {
+      const basicTable = document.getElementById("candidatesTable");
+      if (basicTable) {
+        await getCandidateNames();
+        // Start auto-updating voting status on homepage
+        startVotingStatusUpdates();
+      } else {
+        const resultsTableContainer = document.getElementById("resultsTableContainer");
+        if (resultsTableContainer) {
+          await checkAndDisplayResults();
+          startResultsUpdates();
+        }
       }
+    } catch (err) {
+      console.error("Failed to auto-load candidates:", err);
     }
-  } catch (err) {
-    console.error("Failed to auto-load candidates:", err);
+
+    // Subscribe to accounts change
+    provider.on("accountsChanged", (accounts) => {
+      if (accounts.length === 0) {
+        disconnectWallet();
+      } else {
+        window.location.reload();
+      }
+    });
+
+    // Subscribe to chainId change
+    provider.on("chainChanged", (chainId) => {
+      window.location.reload();
+    });
+
+    // Subscribe to provider connection
+    provider.on("connect", (info) => {
+      console.log("Provider connected:", info);
+    });
+
+    // Subscribe to provider disconnection
+    provider.on("disconnect", (error) => {
+      console.log("Provider disconnected:", error);
+      disconnectWallet();
+    });
+
+  } catch (error) {
+    console.error("Wallet connection error:", error);
+    if (error.message) {
+      alert(`❌ Connection failed: ${error.message}`);
+    }
   }
+}
+
+// New function to disconnect wallet
+const disconnectWallet = async() => {
+  if (web3Modal) {
+    await web3Modal.clearCachedProvider();
+  }
+  provider = null;
+  WALLET_CONNECTED = "";
+  walletType = "";
+  updateWalletConnectionUI();
+  console.log("🔌 Wallet disconnected");
 }
 
 // Centralized UI update for wallet connection
@@ -449,7 +567,9 @@ const updateWalletConnectionUI = () => {
   if (element) {
     if (WALLET_CONNECTED) {
       const truncated = WALLET_CONNECTED.substring(0, 6) + "..." + WALLET_CONNECTED.substring(38);
-      element.textContent = "Metamask is connected " + truncated;
+      const walletName = walletType || "Wallet";
+      element.textContent = `${walletName} connected: ${truncated}`;
+      element.style.color = "#00FF00";
     } else {
       element.textContent = "";
     }
@@ -461,7 +581,7 @@ const getCandidateNames = async() => {
   
   // Check if wallet is connected first
   if(!WALLET_CONNECTED || WALLET_CONNECTED === "") {
-    p3.innerHTML = "⚠️ Please connect MetaMask first to view candidates";
+    p3.innerHTML = "⚠️ Please connect your wallet first to view candidates";
     p3.className = "warning-text";
     p3.style.color = "orange";
     return;
@@ -600,7 +720,7 @@ const addVote = async() => {
     else {
         var cand = document.getElementById("cand");
         if (cand) {
-            cand.innerHTML = "❌ Please connect MetaMask first";
+            cand.innerHTML = "❌ Please connect your wallet first";
             cand.style.color = "red";
         }
     }
@@ -792,7 +912,7 @@ const checkAndDisplayResults = async() => {
         }
     } else {
         if (p3) {
-            p3.innerHTML = "⚠️ Please connect MetaMask first";
+            p3.innerHTML = "⚠️ Please connect your wallet first";
             p3.style.color = "orange";
         }
     }
@@ -864,6 +984,6 @@ const getAllCandidates = async() => {
     }
     else {
         var p3 = document.getElementById("p3");
-        p3.innerHTML = "Please connect metamask first";
+        p3.innerHTML = "Please connect your wallet first";
     }
 }

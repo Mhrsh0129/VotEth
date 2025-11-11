@@ -5,6 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>VotEth — Decentralized Voting</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.12/dist/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
     <script src="main.js"></script>
 	<style>
 		/* ========================================
@@ -501,7 +503,7 @@
 	<div class="container">Welcome to VotEth — Decentralized Voting</div>
 
     <div>
-        <button onclick="connectMetamask()">Connect Metamask</button>
+        <button onclick="connectMetamask()">🔗 Connect Wallet</button>
         <p id="metamasknotification"></p>
     </div>
 
@@ -518,7 +520,7 @@
 	</div>
 
     <div class="container">
-        <p id="status" style="font-size: 22px; color: #FFD700; font-weight: bold;">Connect MetaMask to view voting status</p>
+        <p id="status" style="font-size: 22px; color: #FFD700; font-weight: bold;">Connect your wallet to view voting status</p>
         <p id="time" style="font-size: 20px; color: #D3DAD9;"></p>
     </div>
 
@@ -532,7 +534,7 @@
 	<div class="container">
 		<span>All Candidates</span>
 		<button onclick="getCandidateNames()">Refresh Candidates</button>
-		<p id="p3">Connect MetaMask to view candidates</p>
+		<p id="p3">Connect your wallet to view candidates</p>
 
 		<table id="candidatesTable">
 			<thead>
