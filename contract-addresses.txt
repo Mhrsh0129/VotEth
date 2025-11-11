@@ -545,3 +545,13 @@ Results:
  - INC: 0
 Winners: N/A
 ================================================================================
+
+================================================================================
+Deployment Date: 11/11/2025, 11:50:52 am
+Timestamp: 2025-11-11T06:20:52.116Z
+Contract Address: 0xAEbE1b7B4F45E78E57231e9061433121a6d7c5fB
+Network: Sepolia
+Candidates: BJP, NDA, AAP, BSPA, INC
+Voting Duration: 2 minutes
+Etherscan: https://sepolia.etherscan.io/address/0xAEbE1b7B4F45E78E57231e9061433121a6d7c5fB
+================================================================================
