@@ -455,3 +455,27 @@ Candidates: BJP, NDA, AAP, BSPA, INC
 Voting Duration: 3 minutes
 Etherscan: https://sepolia.etherscan.io/address/0x65b7f572b5fB7F2266d29a22C1A2579758342Ab3
 ================================================================================
+
+================================================================================
+Results Date: 11/11/2025, 8:15:26 am
+Timestamp: 2025-11-11T02:45:26.803Z
+Contract Address: 0x65b7f572b5fB7F2266d29a22C1A2579758342Ab3
+Voting Active: No
+Results:
+ - BJP: 0
+ - NDA: 0
+ - AAP: 0
+ - BSPA: 0
+ - INC: 0
+Winners: N/A
+================================================================================
+
+================================================================================
+Deployment Date: 11/11/2025, 8:37:23 am
+Timestamp: 2025-11-11T03:07:23.698Z
+Contract Address: 0xb693cb31Bc48BD81f3Fe06a7A6a5068D5D9Cc908
+Network: Sepolia
+Candidates: BJP, NDA, AAP, BSPA, INC
+Voting Duration: 3 minutes
+Etherscan: https://sepolia.etherscan.io/address/0xb693cb31Bc48BD81f3Fe06a7A6a5068D5D9Cc908
+================================================================================
