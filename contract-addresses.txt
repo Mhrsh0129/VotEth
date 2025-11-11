@@ -445,3 +445,13 @@ Results:
  - INC: 0
 Winners: AAP (1)
 ================================================================================
+
+================================================================================
+Deployment Date: 11/11/2025, 8:12:22 am
+Timestamp: 2025-11-11T02:42:22.196Z
+Contract Address: 0x65b7f572b5fB7F2266d29a22C1A2579758342Ab3
+Network: Sepolia
+Candidates: BJP, NDA, AAP, BSPA, INC
+Voting Duration: 3 minutes
+Etherscan: https://sepolia.etherscan.io/address/0x65b7f572b5fB7F2266d29a22C1A2579758342Ab3
+================================================================================
