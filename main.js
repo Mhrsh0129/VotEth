@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x590E4Cb6f5DC1982E4A9611A1918acDdf1AbE27c"; // Default fallback
+let contractAddress = "0x71AfC887298246A91F885bC45BedAAcB44265E23"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
 let provider = null; // Current provider
@@ -89,8 +89,11 @@ const NETWORK_NAME = "Sepolia";
 // Check if user is on correct network
 const checkNetwork = async() => {
   try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const network = await provider.getNetwork();
+    if (!window.ethereum && !provider) {
+      return false;
+    }
+    const ethersProvider = provider ? new ethers.providers.Web3Provider(provider) : new ethers.providers.Web3Provider(window.ethereum);
+    const network = await ethersProvider.getNetwork();
     
     if (network.chainId !== SEPOLIA_CHAIN_ID) {
       alert(`⚠️ Wrong Network!\n\nPlease switch to ${NETWORK_NAME} testnet in MetaMask.\n\nCurrent: ${network.name}\nRequired: ${NETWORK_NAME}`);
@@ -610,7 +613,7 @@ window.getCandidateNames = async() => {
   var p3 = document.getElementById("p3");
   
   // Check if wallet is connected first
-  if(!WALLET_CONNECTED || WALLET_CONNECTED === "") {
+  if(!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
     p3.innerHTML = "⚠️ Please connect your wallet first to view candidates";
     p3.className = "warning-text";
     p3.style.color = "orange";
@@ -627,9 +630,9 @@ window.getCandidateNames = async() => {
       p3.innerHTML = '⏳ Loading candidates<span class="spinner"></span>';
       p3.className = "loading-text";
       
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      const signer = provider.getSigner();
+      // Use the connected provider instead of creating a new one
+      const ethersProvider = new ethers.providers.Web3Provider(provider);
+      const signer = ethersProvider.getSigner();
       const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
       
       var candidates = await contractInstance.getAllVotesOfCandidates();
@@ -950,6 +953,15 @@ const checkAndDisplayResults = async() => {
 }
 
 const voteStatus = async() => {
+    // Check if wallet is connected
+    if(!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
+        var status = document.getElementById("status");
+        if (status && !status.innerHTML) {
+            status.innerHTML = "Connect wallet to view voting status";
+        }
+        return;
+    }
+    
     // Wait for config to load
     if (!configLoaded) {
         await loadConfig();
@@ -958,9 +970,10 @@ const voteStatus = async() => {
     if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         var status = document.getElementById("status");
         var remainingTime = document.getElementById("time");
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
+        
+        // Use the connected provider instead of creating a new one
+        const ethersProvider = new ethers.providers.Web3Provider(provider);
+        const signer = ethersProvider.getSigner();
         const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
         const currentStatus = await contractInstance.getVotingStatus();
   const time = await contractInstance.getRemainingTime();
@@ -978,6 +991,11 @@ const voteStatus = async() => {
 }
 
 const getAllCandidates = async() => {
+    // Check if wallet is connected
+    if(!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
+        return;
+    }
+    
     // Wait for config to load
     if (!configLoaded) {
         await loadConfig();
@@ -985,9 +1003,10 @@ const getAllCandidates = async() => {
     
     if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         var p3 = document.getElementById("p3");
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
+        
+        // Use the connected provider instead of creating a new one
+        const ethersProvider = new ethers.providers.Web3Provider(provider);
+        const signer = ethersProvider.getSigner();
         const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
         p3.innerHTML = "Please wait, getting all the candidates from the voting smart contract";
         var candidates = await contractInstance.getAllVotesOfCandidates();
