@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0xcB51bCADb625f822Bb0433b2f4C7cA110876dfe7"; // Default fallback
+let contractAddress = "0x590E4Cb6f5DC1982E4A9611A1918acDdf1AbE27c"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
 let provider = null; // Current provider
