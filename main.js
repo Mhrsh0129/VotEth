@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x71AfC887298246A91F885bC45BedAAcB44265E23"; // Default fallback
+let contractAddress = "0xACbb342D7A912Dc6d692da27dcDDad7615Fa9Ab1"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
 let provider = null; // Current provider
@@ -718,9 +718,9 @@ window.addVote = async() => {
         }
         
         try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            await provider.send("eth_requestAccounts", []);
-            const signer = provider.getSigner();
+            // Use the connected provider instead of creating a new one
+            const ethersProvider = new ethers.providers.Web3Provider(provider);
+            const signer = ethersProvider.getSigner();
             const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
             
             cand.innerHTML = '⏳ Submitting vote<span class="spinner"></span>';
