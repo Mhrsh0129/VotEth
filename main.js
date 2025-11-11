@@ -8,19 +8,13 @@ let configLoaded = false; // Track if config has been loaded
 // ========================================
 function toggleTheme() {
   const body = document.body;
-  const themeIcon = document.getElementById('themeIcon');
-  const themeText = document.getElementById('themeText');
   
   body.classList.toggle('light-theme');
   
-  // Update icon and text with null checks
+  // Save preference
   if (body.classList.contains('light-theme')) {
-    if (themeIcon) themeIcon.textContent = '☀️';
-    if (themeText) themeText.textContent = 'Light';
     localStorage.setItem('theme', 'light');
   } else {
-    if (themeIcon) themeIcon.textContent = '🌙';
-    if (themeText) themeText.textContent = 'Dark';
     localStorage.setItem('theme', 'dark');
   }
 }
@@ -29,18 +23,12 @@ function toggleTheme() {
 function loadSavedTheme() {
   const savedTheme = localStorage.getItem('theme');
   const body = document.body;
-  const themeIcon = document.getElementById('themeIcon');
-  const themeText = document.getElementById('themeText');
   
   if (savedTheme === 'light') {
     body.classList.add('light-theme');
-    if (themeIcon) themeIcon.textContent = '☀️';
-    if (themeText) themeText.textContent = 'Light';
   } else {
     // Dark theme (default or explicitly saved)
     body.classList.remove('light-theme');
-    if (themeIcon) themeIcon.textContent = '🌙';
-    if (themeText) themeText.textContent = 'Dark';
   }
 }
 
