@@ -459,6 +459,14 @@ const updateWalletConnectionUI = () => {
 const getCandidateNames = async() => {
   var p3 = document.getElementById("p3");
   
+  // Check if wallet is connected first
+  if(!WALLET_CONNECTED || WALLET_CONNECTED === "") {
+    p3.innerHTML = "⚠️ Please connect MetaMask first to view candidates";
+    p3.className = "warning-text";
+    p3.style.color = "orange";
+    return;
+  }
+  
   // Wait for config to load
   if (!configLoaded) {
     await loadConfig();
