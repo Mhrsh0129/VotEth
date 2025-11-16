@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0xACbb342D7A912Dc6d692da27dcDDad7615Fa9Ab1"; // Default fallback
+let contractAddress = "0x0eCB20360A4012f3CBFf1846247987CC13ef4a98"; // Default fallback
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
 let provider = null; // Current provider
@@ -400,8 +400,12 @@ const switchContractManual = async() => {
   
   // Check if it's a contract (has code)
   try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const code = await provider.getCode(address);
+    if (!window.ethereum && !provider) {
+      alert("⚠️ Please install a Web3 wallet to validate contract addresses.");
+      return;
+    }
+    const ethersProvider = provider ? new ethers.providers.Web3Provider(provider) : new ethers.providers.Web3Provider(window.ethereum);
+    const code = await ethersProvider.getCode(address);
     
     if (code === '0x') {
       alert("⚠️ This address has no contract code!\n\nPlease make sure you're using a deployed Voting contract address.");
@@ -851,9 +855,10 @@ if (typeof window !== 'undefined') {
           window.ethereum.request({ method: 'eth_accounts' })
             .then(async accounts => {
               if (accounts && accounts.length > 0) {
-                // User is already connected - reuse proper connection flow
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                const signer = provider.getSigner();
+                // User is already connected - set global provider
+                provider = window.ethereum;
+                const ethersProvider = new ethers.providers.Web3Provider(provider);
+                const signer = ethersProvider.getSigner();
                 WALLET_CONNECTED = await signer.getAddress();
                 
                 // Use centralized UI update for consistency
@@ -907,6 +912,15 @@ const startResultsUpdates = async () => {
 const checkAndDisplayResults = async() => {
     var p3 = document.getElementById("p3");
     
+    // Check if wallet is connected
+    if(!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
+        if (p3) {
+            p3.innerHTML = "⚠️ Please connect your wallet to view results";
+            p3.style.color = "orange";
+        }
+        return;
+    }
+    
     // Wait for config to load
     if (!configLoaded) {
         await loadConfig();
@@ -914,9 +928,9 @@ const checkAndDisplayResults = async() => {
     
     if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
         try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            await provider.send("eth_requestAccounts", []);
-            const signer = provider.getSigner();
+            // Use the connected provider instead of creating a new one
+            const ethersProvider = new ethers.providers.Web3Provider(provider);
+            const signer = ethersProvider.getSigner();
             const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
             
             // Check voting status
