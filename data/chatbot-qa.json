@@ -1,0 +1,254 @@
+{
+  "categories": {
+    "voting": {
+      "name": "Voting Process",
+      "icon": "🗳️",
+      "faqs": [
+        {
+          "id": "v1",
+          "question": "How do I vote?",
+          "answer": "Connect your MetaMask wallet, select a candidate from the list, and click the 'Vote' button. Confirm the transaction in MetaMask to cast your vote on the blockchain.",
+          "keywords": ["vote", "how to vote", "cast vote", "voting process"]
+        },
+        {
+          "id": "v2",
+          "question": "Can I vote multiple times?",
+          "answer": "No, each wallet address can only vote once per election. This is enforced by the smart contract to ensure fair voting.",
+          "keywords": ["multiple votes", "vote again", "vote twice", "one vote"]
+        },
+        {
+          "id": "v3",
+          "question": "How much does it cost to vote?",
+          "answer": "Voting requires a small gas fee (transaction fee) on the Sepolia testnet. You'll need testnet ETH in your wallet to cover this fee.",
+          "keywords": ["cost", "fee", "price", "gas fee", "how much"]
+        },
+        {
+          "id": "v4",
+          "question": "Can I change my vote?",
+          "answer": "No, votes are permanent once submitted to the blockchain. Please review your selection carefully before confirming.",
+          "keywords": ["change vote", "modify vote", "update vote", "revote"]
+        },
+        {
+          "id": "v5",
+          "question": "Is my vote anonymous?",
+          "answer": "Votes are public on the blockchain and linked to wallet addresses, but wallet addresses are pseudonymous. Your identity is not directly revealed unless you publicly link your wallet to your identity.",
+          "keywords": ["anonymous", "privacy", "secret ballot", "confidential"]
+        }
+      ]
+    },
+    "wallet": {
+      "name": "Wallet & Connection",
+      "icon": "👛",
+      "faqs": [
+        {
+          "id": "w1",
+          "question": "How do I connect my wallet?",
+          "answer": "Click 'Connect Wallet' button and approve the connection request in your MetaMask extension. Make sure you're on the Sepolia testnet.",
+          "keywords": ["connect wallet", "metamask", "wallet connection"]
+        },
+        {
+          "id": "w2",
+          "question": "What is MetaMask?",
+          "answer": "MetaMask is a cryptocurrency wallet browser extension that lets you interact with blockchain applications. You can download it from metamask.io",
+          "keywords": ["metamask", "what is metamask", "crypto wallet"]
+        },
+        {
+          "id": "w3",
+          "question": "How do I get testnet ETH?",
+          "answer": "Use a Sepolia faucet like sepolia-faucet.pk910.de or sepoliafaucet.com. Enter your wallet address to receive free testnet ETH for transactions.",
+          "keywords": ["testnet eth", "faucet", "free eth", "sepolia eth"]
+        },
+        {
+          "id": "w4",
+          "question": "Wrong network error?",
+          "answer": "Switch to Sepolia testnet in MetaMask. Go to Networks dropdown → Add Network → Search for Sepolia or add manually with Chain ID: 11155111",
+          "keywords": ["wrong network", "network error", "sepolia", "switch network"]
+        },
+        {
+          "id": "w5",
+          "question": "Wallet not connecting?",
+          "answer": "Try these steps: 1) Refresh the page 2) Disconnect wallet in MetaMask settings 3) Clear browser cache 4) Try a different browser 5) Update MetaMask extension",
+          "keywords": ["wallet not connecting", "connection failed", "metamask error"]
+        }
+      ]
+    },
+    "results": {
+      "name": "Results & Analytics",
+      "icon": "📊",
+      "faqs": [
+        {
+          "id": "r1",
+          "question": "Where can I see results?",
+          "answer": "Click 'Results' in the navigation to see real-time voting results, or visit the Analytics dashboard for detailed charts and statistics.",
+          "keywords": ["results", "see results", "view results", "check results"]
+        },
+        {
+          "id": "r2",
+          "question": "Are results real-time?",
+          "answer": "Yes! Results update in real-time as votes are recorded on the blockchain. The analytics dashboard auto-refreshes every 10 seconds.",
+          "keywords": ["real-time", "live results", "update results", "auto refresh"]
+        },
+        {
+          "id": "r3",
+          "question": "How is the winner determined?",
+          "answer": "The candidate with the highest number of votes wins. In case of a tie, the blockchain records show the exact vote counts for verification.",
+          "keywords": ["winner", "who wins", "determine winner", "tie"]
+        },
+        {
+          "id": "r4",
+          "question": "Can results be manipulated?",
+          "answer": "No, results are stored on the blockchain which is immutable and transparent. Anyone can verify vote counts by inspecting the smart contract.",
+          "keywords": ["manipulate", "fraud", "tamper", "fake results", "trust"]
+        },
+        {
+          "id": "r5",
+          "question": "How do I export analytics data?",
+          "answer": "On the Analytics page, use the 'Export CSV' button to download voting data, or 'Download Chart' to save charts as PNG images.",
+          "keywords": ["export", "download", "csv", "save data", "analytics export"]
+        }
+      ]
+    },
+    "technical": {
+      "name": "Technical Info",
+      "icon": "⚙️",
+      "faqs": [
+        {
+          "id": "t1",
+          "question": "What blockchain is this on?",
+          "answer": "VotEth runs on Ethereum's Sepolia testnet. This is a test network for development and demonstration purposes.",
+          "keywords": ["blockchain", "ethereum", "sepolia", "network"]
+        },
+        {
+          "id": "t2",
+          "question": "What is a smart contract?",
+          "answer": "A smart contract is self-executing code on the blockchain. Our voting contract automatically enforces voting rules without intermediaries.",
+          "keywords": ["smart contract", "contract", "solidity"]
+        },
+        {
+          "id": "t3",
+          "question": "Is this secure?",
+          "answer": "Yes, votes are secured by blockchain cryptography. The contract has been audited for security vulnerabilities and follows best practices.",
+          "keywords": ["secure", "security", "safe", "audit", "hack"]
+        },
+        {
+          "id": "t4",
+          "question": "What are gas fees?",
+          "answer": "Gas fees are transaction costs paid to blockchain validators. They vary based on network congestion. On testnet, these fees are paid with free test ETH.",
+          "keywords": ["gas", "fees", "transaction cost", "gwei"]
+        },
+        {
+          "id": "t5",
+          "question": "Can I see the source code?",
+          "answer": "Yes! This is open-source. The smart contract code is verified on Etherscan, and the frontend code is available on our GitHub repository.",
+          "keywords": ["source code", "github", "open source", "code", "contract code"]
+        }
+      ]
+    },
+    "features": {
+      "name": "Features & Tools",
+      "icon": "✨",
+      "faqs": [
+        {
+          "id": "f1",
+          "question": "What languages are supported?",
+          "answer": "VotEth supports English, Hindi (हिन्दी), Gujarati (ગુજરાતી), and Marathi (मराठी). Use the language selector in the navigation bar.",
+          "keywords": ["language", "hindi", "gujarati", "marathi", "translation"]
+        },
+        {
+          "id": "f2",
+          "question": "How do QR codes work?",
+          "answer": "Generate a QR code for the voting page and share it with voters. Scanning the code opens the voting interface directly on mobile devices.",
+          "keywords": ["qr code", "scan", "mobile voting", "share"]
+        },
+        {
+          "id": "f3",
+          "question": "What is dark/light mode?",
+          "answer": "Toggle between dark and light themes using the theme switch in the navigation bar. Your preference is saved automatically.",
+          "keywords": ["dark mode", "light mode", "theme", "appearance"]
+        },
+        {
+          "id": "f4",
+          "question": "How does analytics work?",
+          "answer": "The Analytics dashboard provides real-time vote distribution charts, percentage breakdowns, leaderboards, and detailed statistics with auto-refresh.",
+          "keywords": ["analytics", "charts", "statistics", "dashboard"]
+        },
+        {
+          "id": "f5",
+          "question": "Can I use this on mobile?",
+          "answer": "Yes! The interface is fully responsive. Use MetaMask mobile browser or WalletConnect-compatible wallets to vote from your phone.",
+          "keywords": ["mobile", "phone", "responsive", "mobile voting"]
+        }
+      ]
+    },
+    "troubleshooting": {
+      "name": "Troubleshooting",
+      "icon": "🔧",
+      "faqs": [
+        {
+          "id": "ts1",
+          "question": "Transaction failed error?",
+          "answer": "Common causes: 1) Insufficient testnet ETH for gas 2) Wrong network 3) Already voted 4) Network congestion. Check your balance and network settings.",
+          "keywords": ["transaction failed", "error", "failed", "not working"]
+        },
+        {
+          "id": "ts2",
+          "question": "Page not loading?",
+          "answer": "Try: 1) Refresh the page 2) Clear browser cache 3) Disable ad blockers 4) Check internet connection 5) Try incognito mode",
+          "keywords": ["not loading", "blank page", "loading error", "broken"]
+        },
+        {
+          "id": "ts3",
+          "question": "Candidates not showing?",
+          "answer": "Ensure: 1) Wallet is connected 2) You're on Sepolia network 3) Election is active 4) Page is fully loaded. Try refreshing the page.",
+          "keywords": ["no candidates", "empty", "candidates not showing", "blank"]
+        },
+        {
+          "id": "ts4",
+          "question": "MetaMask popup blocked?",
+          "answer": "Check your browser's popup blocker settings. Allow popups for this site or click the MetaMask extension icon manually to approve transactions.",
+          "keywords": ["popup blocked", "metamask not opening", "popup blocker"]
+        },
+        {
+          "id": "ts5",
+          "question": "Slow transaction confirmation?",
+          "answer": "Blockchain confirmations can take 15-30 seconds on Sepolia. Wait patiently and don't submit multiple times. Check transaction status on Sepolia Etherscan.",
+          "keywords": ["slow", "pending", "waiting", "confirmation"]
+        }
+      ]
+    }
+  },
+  "quickActions": [
+    {
+      "id": "qa1",
+      "label": "How to vote?",
+      "response": "voting/v1"
+    },
+    {
+      "id": "qa2",
+      "label": "Connect wallet help",
+      "response": "wallet/w1"
+    },
+    {
+      "id": "qa3",
+      "label": "View results",
+      "response": "results/r1"
+    },
+    {
+      "id": "qa4",
+      "label": "Get testnet ETH",
+      "response": "wallet/w3"
+    }
+  ],
+  "fallbackMessages": [
+    "I'm not sure about that specific question. Try asking about voting, wallets, results, or technical details.",
+    "Hmm, I don't have an answer for that yet. Would you like to know about how to vote, connect your wallet, or view results?",
+    "That's beyond my knowledge base. You can ask about voting process, wallet setup, analytics, or troubleshooting.",
+    "I'm still learning! Try asking about supported languages, QR codes, security, or how the blockchain voting works."
+  ],
+  "greetings": [
+    "Hi! 👋 I'm your VotEth assistant. Ask me anything about voting, wallets, or results!",
+    "Hello! Welcome to VotEth. How can I help you today?",
+    "Hey there! Need help with voting or navigating the platform?",
+    "Greetings! I'm here to answer your questions about blockchain voting."
+  ]
+}

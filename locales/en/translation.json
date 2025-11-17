@@ -1,0 +1,119 @@
+{
+  "app": {
+    "title": "VotEth — Decentralized Voting",
+    "welcome": "Welcome to VotEth — Decentralized Voting"
+  },
+  "nav": {
+    "vote": "Vote",
+    "results": "Results",
+    "analytics": "Analytics"
+  },
+  "wallet": {
+    "connect": "Connect Wallet",
+    "connected": "Wallet connected",
+    "disconnect": "Disconnect",
+    "connectPrompt": "Connect your wallet to view voting status",
+    "notConnected": "Wallet not connected",
+    "switchNetwork": "Please switch to Sepolia network"
+  },
+  "election": {
+    "current": "Current Election",
+    "status": "Voting Status",
+    "active": "Voting is currently open",
+    "finished": "Voting is finished",
+    "remainingTime": "Remaining time is {{seconds}} seconds",
+    "timeLeft": "Time Left",
+    "contract": "Contract",
+    "contractFull": "Contract (full)"
+  },
+  "voting": {
+    "title": "Vote here",
+    "placeholder": "Add Index of the Voter ...",
+    "submit": "Add Vote",
+    "success": "Vote successfully recorded!",
+    "alreadyVoted": "You have already voted!",
+    "votingEnded": "Voting period has ended",
+    "invalidCandidate": "Invalid candidate number",
+    "transactionRejected": "Transaction rejected by user",
+    "transactionFailed": "Transaction failed. Please try again.",
+    "connectFirst": "Please connect your wallet first",
+    "submitting": "Submitting vote",
+    "confirming": "Confirming transaction"
+  },
+  "candidates": {
+    "title": "All Candidates",
+    "refresh": "Refresh Candidates",
+    "loading": "Loading candidates",
+    "loaded": "Candidates loaded successfully",
+    "failed": "Failed to load candidates. Please refresh the page.",
+    "connectToView": "Connect your wallet to view candidates",
+    "index": "Index",
+    "name": "Candidate name",
+    "voteCount": "Vote Count"
+  },
+  "results": {
+    "title": "Election Results",
+    "viewResults": "View Results",
+    "votingOngoing": "Voting is still ongoing",
+    "votingOngoingMessage": "Results will be available once voting has ended.",
+    "checkBack": "Please check back later.",
+    "loading": "Please wait, getting all the candidates from the voting smart contract",
+    "updated": "The tasks are updated",
+    "connectToView": "Please connect your wallet first"
+  },
+  "qr": {
+    "generate": "Generate QR Code",
+    "hide": "Hide QR Code",
+    "scanToVote": "Scan to Vote",
+    "download": "Download PNG",
+    "copyUrl": "Copy URL",
+    "share": "Share",
+    "votingUrl": "Voting URL",
+    "howToUse": "How to use:",
+    "step1": "Download or screenshot this QR code",
+    "step2": "Share on posters, emails, or social media",
+    "step3": "Voters scan with their phone camera",
+    "step4": "Automatically opens voting page",
+    "generating": "Generating QR Code...",
+    "failed": "Failed to generate QR code",
+    "downloaded": "QR code downloaded successfully!",
+    "urlCopied": "URL copied to clipboard!",
+    "downloadFailed": "Failed to download QR code",
+    "notGenerated": "Please generate a QR code first",
+    "sharingNotSupported": "Sharing not supported. URL copied instead."
+  },
+  "notifications": {
+    "success": "Success!",
+    "error": "Error occurred",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "errors": {
+    "wrongNetwork": "Wrong Network! Please switch to Sepolia testnet in your wallet.",
+    "noWallet": "No Ethereum wallet detected! Please install MetaMask, Phantom, or another Web3 wallet.",
+    "connectionFailed": "Connection failed",
+    "invalidAddress": "Invalid Ethereum address format",
+    "noContract": "This address has no contract code!"
+  },
+  "common": {
+    "loading": "Loading...",
+    "pleaseWait": "Please wait",
+    "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "download": "Download",
+    "upload": "Upload",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort"
+  }
+}

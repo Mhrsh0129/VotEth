@@ -13,8 +13,31 @@
         crossorigin="anonymous">
     </script>
     
+    <!-- i18next Internationalization -->
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@2.4.2/i18nextHttpBackend.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
+    
+    <!-- Translation Helper -->
+    <script src="js/translation-helper.js"></script>
+    
+    <!-- i18n Configuration -->
+    <script src="js/i18n-config.js" defer></script>
+    
+    <!-- Theme Management -->
+    <script src="js/theme.js"></script>
+    
+    <!-- Chatbot Configuration (Optional AI Setup) -->
+    <script src="js/chatbot-config.js"></script>
+    
+    <!-- Chatbot -->
+    <script src="js/chatbot.js" defer></script>
+    
     <!-- Main application script - deferred to load after DOM -->
     <script src="main.js" defer></script>
+    
+    <!-- Language Selector Styles -->
+    <link rel="stylesheet" href="css/language-styles.css">
 	<style>
 		/* ========================================
 		   CSS VARIABLES FOR THEME SWITCHING
@@ -418,24 +441,39 @@
 	}
 
 	</style>
+    
+    <!-- Chatbot Styles -->
+    <link rel="stylesheet" href="css/chatbot.css">
 
 </head>
 <body>
     <div class = "navbar">
 		<div class="navbar-links">
-			<a href="/index.html">Vote</a>
-			<a href="/ListVoters.html">Results</a>
+			<a href="/index.html" data-i18n="nav.vote">Vote</a>
+			<a href="/ListVoters.html" data-i18n="nav.results">Results</a>
+			<a href="/analytics.html" data-i18n="nav.analytics">Analytics</a>
 		</div>
-		<!-- Theme Toggle Switch -->
-		<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-			<span class="theme-icon moon-icon">🌙</span>
-			<span class="theme-icon sun-icon">☀️</span>
-			<div class="theme-slider"></div>
-		</button>
+		<div style="display: flex; align-items: center; gap: 10px;">
+			<!-- Language Selector -->
+			<div class="language-selector-container">
+				<select id="languageSelector" class="language-selector" aria-label="Select Language">
+					<option value="en">🇬🇧 English</option>
+					<option value="hi">🇮🇳 हिन्दी</option>
+					<option value="gu">🇮🇳 ગુજરાતી</option>
+					<option value="mr">🇮🇳 मराठી</option>
+				</select>
+			</div>
+			<!-- Theme Toggle Switch -->
+			<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+				<span class="theme-icon moon-icon">🌙</span>
+				<span class="theme-icon sun-icon">☀️</span>
+				<div class="theme-slider"></div>
+			</button>
+		</div>
     </div>
 
     <div>
-        <button onclick="connectMetamask()">🔗 Connect Wallet</button>
+        <button onclick="connectMetamask()" data-i18n="wallet.connect">🔗 Connect Wallet</button>
         <p id="metamasknotification"></p>
     </div>
 
@@ -446,14 +484,14 @@
     </div>
 
 	<div id="votingOngoingMessage" class="hidden">
-		<div class="voting-message">
+		<div class="voting-message" data-i18n="results.votingOngoingMessage">
 			⏳ Voting is currently in progress. Results will be available once voting ends.
 		</div>
 	</div>
 
 	<div>
 		<!-- <button onclick="getAllCandidates()">List All Candidates</button> -->
-		<button onclick="checkAndDisplayResults()" id="showResultsBtn">Show Results</button>
+		<button onclick="checkAndDisplayResults()" id="showResultsBtn" data-i18n="results.viewResults">Show Results</button>
 		<p id="p3"></p>
 	</div>
 
@@ -461,9 +499,9 @@
         <table id="myTable">
             <thead>
                 <tr>
-                    <th>Index</th>
-                    <th>Candidate name</th>
-                    <th>Candidate votes</th>
+                    <th data-i18n="candidates.index">Index</th>
+                    <th data-i18n="candidates.name">Candidate name</th>
+                    <th data-i18n="candidates.voteCount">Candidate votes</th>
                 </tr>
             </thead>
             <tbody>

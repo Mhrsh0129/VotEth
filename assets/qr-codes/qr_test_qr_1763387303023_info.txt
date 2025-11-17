@@ -1,0 +1,10 @@
+{
+  "electionName": "test-qr",
+  "contractAddress": "0x50bc25f0878B5081Bf00870643C74DDe6df64756",
+  "votingUrl": "https://vot-eth.vercel.app?contract=0x50bc25f0878B5081Bf00870643C74DDe6df64756&election=test-qr",
+  "generatedAt": "2025-11-17T13:48:23.169Z",
+  "files": {
+    "png": "qr_test_qr_1763387303023.png",
+    "svg": "qr_test_qr_1763387303023.svg"
+  }
+}

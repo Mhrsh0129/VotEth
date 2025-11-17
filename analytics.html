@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VotEth — Analytics Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📊</text></svg>">
+    
+    <!-- Ethers.js -->
+    <script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"
+        integrity="sha512-FDcVY+g7vc5CXANbrTSg1K5qLyriCsGDYCE02Li1tXEYdNQPvLPHNE+rT2Mjei8N7fZbe0WLhw27j2SrGRpdMg==="
+        crossorigin="anonymous">
+    </script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- i18next -->
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@2.4.2/i18nextHttpBackend.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
+    
+    <!-- Translation Helper -->
+    <script src="js/translation-helper.js"></script>
+    
+    <!-- i18n Configuration -->
+    <script src="js/i18n-config.js" defer></script>
+    
+    <!-- Theme Management -->
+    <script src="js/theme.js"></script>
+    
+    <!-- Chatbot Configuration -->
+    <script src="js/chatbot-config.js"></script>
+    
+    <!-- Chatbot -->
+    <script src="js/chatbot.js" defer></script>
+    
+    <!-- Analytics Module -->
+    <script src="js/analytics.js" defer></script>
+    
+    <!-- Main application script -->
+    <script src="main.js" defer></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/language-styles.css">
+    <link rel="stylesheet" href="css/analytics.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+    
+    <style>
+        /* Inherit theme variables from main styles */
+        :root {
+            --bg-color: #132440;
+            --text-color: #ffffff;
+            --card-bg: #1a3a5c;
+            --border-color: #FFD700;
+            --table-header-bg: #0f1f33;
+            --button-bg: #FFD700;
+            --button-text: #132440;
+            --input-bg: #1a3a5c;
+            --secondary-text: #D3DAD9;
+            --accent-color: #FFD700;
+        }
+
+        body.light-theme {
+            --bg-color: #f5f5f5;
+            --text-color: #1a1a1a;
+            --card-bg: #ffffff;
+            --border-color: #1a73e8;
+            --table-header-bg: #e8f0fe;
+            --button-bg: #1a73e8;
+            --button-text: #ffffff;
+            --input-bg: #f8f9fa;
+            --secondary-text: #5f6368;
+            --accent-color: #1a73e8;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Navbar  - reusing from main */
+        .navbar {
+            overflow: hidden;
+            background-color: #1a2f4a;
+            font-family: Arial;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-right: 10px;
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        .navbar-links {
+            display: flex;
+        }
+
+        .navbar a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 10px 20px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: #FFD700;
+            color: #132440;
+        }
+
+        /* Theme toggle (same as main) */
+        .theme-toggle {
+            position: relative;
+            width: 70px;
+            height: 34px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 34px;
+            cursor: pointer;
+            margin-right: 15px;
+            margin-top: -2px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                inset 0 2px 8px rgba(0, 0, 0, 0.5),
+                0 2px 8px rgba(0, 0, 0, 0.2);
+            overflow: visible;
+        }
+
+        body.light-theme .theme-toggle {
+            background: linear-gradient(135deg, #f39c12 0%, #f5b041 100%);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+            z-index: 2;
+        }
+
+        body.light-theme .theme-slider {
+            transform: translateX(36px);
+        }
+
+        .theme-icon {
+            font-size: 16px;
+            position: absolute;
+            transition: all 0.3s ease;
+            z-index: 1;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .moon-icon {
+            left: 10px;
+            opacity: 1;
+        }
+
+        .sun-icon {
+            right: 10px;
+            opacity: 0.4;
+        }
+
+        body.light-theme .moon-icon {
+            opacity: 0.4;
+        }
+
+        body.light-theme .sun-icon {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="navbar-links">
+            <a href="/index.html" data-i18n="nav.vote">Vote</a>
+            <a href="/ListVoters.html" data-i18n="nav.results">Results</a>
+            <a href="/analytics.html" style="background-color: rgba(255, 215, 0, 0.2);">📊 Analytics</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <!-- Language Selector -->
+            <div class="language-selector-container">
+                <select id="languageSelector" class="language-selector" aria-label="Select Language">
+                    <option value="en">🇬🇧 English</option>
+                    <option value="hi">🇮🇳 हिन्दी</option>
+                    <option value="gu">🇮🇳 ગુજરાતી</option>
+                    <option value="mr">🇮🇳 मराठी</option>
+                </select>
+            </div>
+            <!-- Theme Toggle -->
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                <span class="theme-icon moon-icon">🌙</span>
+                <span class="theme-icon sun-icon">☀️</span>
+                <div class="theme-slider"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="analytics-header">
+        <h1>📊 Election Analytics Dashboard</h1>
+        <p class="subtitle">Real-time insights and statistics for your election</p>
+    </div>
+
+    <!-- Connect Wallet -->
+    <div class="connect-section">
+        <button onclick="connectMetamask()" id="connectBtn" data-i18n="wallet.connect">🔗 Connect Wallet</button>
+        <p id="metamasknotification"></p>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-container" style="display: none;">
+        <div class="spinner-large"></div>
+        <p data-i18n="common.loading">Loading analytics...</p>
+    </div>
+
+    <!-- Analytics Dashboard -->
+    <div id="analyticsContent" style="display: none;">
+        
+        <!-- Key Metrics Cards -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">🗳️</div>
+                <div class="metric-value" id="totalVotes">0</div>
+                <div class="metric-label">Total Votes</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon">👥</div>
+                <div class="metric-value" id="totalCandidates">0</div>
+                <div class="metric-label">Candidates</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon">📈</div>
+                <div class="metric-value" id="participationRate">0%</div>
+                <div class="metric-label">Participation Rate</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-icon">⏰</div>
+                <div class="metric-value" id="electionStatus">-</div>
+                <div class="metric-label">Status</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-container">
+            
+            <!-- Vote Distribution Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>📊 Vote Distribution</h3>
+                    <button class="chart-download-btn" onclick="analyticsManager.downloadChart('voteDistChart')">
+                        💾 Download
+                    </button>
+                </div>
+                <canvas id="voteDistChart"></canvas>
+            </div>
+
+            <!-- Vote Percentage Pie Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>🥧 Vote Percentages</h3>
+                    <button class="chart-download-btn" onclick="analyticsManager.downloadChart('votePieChart')">
+                        💾 Download
+                    </button>
+                </div>
+                <canvas id="votePieChart"></canvas>
+            </div>
+
+            <!-- Leader Board -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>🏆 Leader Board</h3>
+                </div>
+                <div id="leaderBoard" class="leader-board"></div>
+            </div>
+
+            <!-- Statistics Table -->
+            <div class="chart-card full-width">
+                <div class="chart-header">
+                    <h3>📋 Detailed Statistics</h3>
+                    <button class="chart-download-btn" onclick="analyticsManager.exportToCSV()">
+                        📄 Export CSV
+                    </button>
+                </div>
+                <div class="stats-table-container">
+                    <table id="statsTable">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Candidate</th>
+                                <th>Votes</th>
+                                <th>Percentage</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto Refresh Controls -->
+        <div class="refresh-controls">
+            <label class="toggle-switch">
+                <input type="checkbox" id="autoRefreshToggle" checked>
+                <span class="toggle-slider"></span>
+            </label>
+            <span>Auto-refresh every 10 seconds</span>
+            <button onclick="analyticsManager.refresh()" class="refresh-btn">🔄 Refresh Now</button>
+        </div>
+
+    </div>
+
+    <!-- No Data State -->
+    <div id="noDataState" style="display: none;" class="empty-state">
+        <div class="empty-icon">📊</div>
+        <h2>No Data Available</h2>
+        <p data-i18n="wallet.connectPrompt">Connect your wallet to view analytics</p>
+    </div>
+
+    <script src="js/theme.js"></script>
+</body>
+</html>

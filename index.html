@@ -13,8 +13,37 @@
         crossorigin="anonymous">
     </script>
     
+    <!-- i18next Internationalization -->
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@2.4.2/i18nextHttpBackend.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-browser-languagedetector@7.2.0/i18nextBrowserLanguageDetector.min.js"></script>
+    
+    <!-- Translation Helper -->
+    <script src="js/translation-helper.js"></script>
+    
+    <!-- i18n Configuration -->
+    <script src="js/i18n-config.js" defer></script>
+    
+    <!-- QR Code Manager -->
+    <script src="js/qr-manager.js" defer></script>
+    
+    <!-- Theme Management -->
+    <script src="js/theme.js"></script>
+    
+    <!-- Chatbot Configuration (Optional AI Setup) -->
+    <script src="js/chatbot-config.js"></script>
+    
+    <!-- Chatbot -->
+    <script src="js/chatbot.js" defer></script>
+    
     <!-- Main application script - deferred to load after DOM -->
     <script src="main.js" defer></script>
+    
+    <!-- QR Code Styles -->
+    <link rel="stylesheet" href="css/qr-styles.css">
+    
+    <!-- Language Selector Styles -->
+    <link rel="stylesheet" href="css/language-styles.css">
 	<style>
 		/* ========================================
 		   CSS VARIABLES FOR THEME SWITCHING
@@ -491,63 +520,78 @@
 	}
 
 	</style>
+    
+    <!-- Chatbot Styles -->
+    <link rel="stylesheet" href="css/chatbot.css">
 
 </head>
 <body>
     <div class = "navbar">
 		<div class="navbar-links">
-			<a href="/index.html">Vote</a>
-			<a href="/ListVoters.html">Results</a>
+			<a href="/index.html" data-i18n="nav.vote">Vote</a>
+			<a href="/ListVoters.html" data-i18n="nav.results">Results</a>
+			<a href="/analytics.html" data-i18n="nav.analytics">Analytics</a>
 		</div>
-		<!-- Theme Toggle Switch -->
-		<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-			<span class="theme-icon moon-icon">🌙</span>
-			<span class="theme-icon sun-icon">☀️</span>
-			<div class="theme-slider"></div>
-		</button>
+		<div style="display: flex; align-items: center; gap: 10px;">
+			<!-- Language Selector -->
+			<div class="language-selector-container">
+				<select id="languageSelector" class="language-selector" aria-label="Select Language">
+					<option value="en">🇬🇧 English</option>
+					<option value="hi">🇮🇳 हिन्दी</option>
+					<option value="gu">🇮🇳 ગુજરાતી</option>
+					<option value="mr">🇮🇳 मराठी</option>
+				</select>
+			</div>
+			<!-- Theme Toggle Switch -->
+			<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+				<span class="theme-icon moon-icon">🌙</span>
+				<span class="theme-icon sun-icon">☀️</span>
+				<div class="theme-slider"></div>
+			</button>
+		</div>
     </div>
 
-	<div class="container">Welcome to VotEth — Decentralized Voting</div>
+	<div class="container" data-i18n="app.welcome">Welcome to VotEth — Decentralized Voting</div>
 
     <div>
-        <button onclick="connectMetamask()">🔗 Connect Wallet</button>
+        <button onclick="connectMetamask()" data-i18n="wallet.connect">🔗 Connect Wallet</button>
         <p id="metamasknotification"></p>
     </div>
 
 	<!-- Current Contract / Election Display -->
 	<div class="container">
 		<div id="currentElectionDisplay" class="election-display-box">
-			<strong>Current Election</strong><br><br>
-			<strong>Election:</strong> Current Election<br>
-			<small>Connect wallet to view details</small>
+			<strong data-i18n="election.current">Current Election</strong><br><br>
+			<strong><span data-i18n="election.current">Election</span>:</strong> Current Election<br>
+			<small data-i18n="wallet.connectPrompt">Connect wallet to view details</small>
 			<div class="contract-address-full">
-				<span>Contract (full): </span><span id="contractFullAddress">—</span>
+				<span data-i18n="election.contractFull">Contract (full): </span><span id="contractFullAddress">—</span>
 			</div>
 		</div>
 	</div>
 
     <div class="container">
-        <p id="status" style="font-size: 22px; color: #FFD700; font-weight: bold;">Connect your wallet to view voting status</p>
+        <p id="status" style="font-size: 22px; color: #FFD700; font-weight: bold;" data-i18n="wallet.connectPrompt">Connect your wallet to view voting status</p>
         <p id="time" style="font-size: 20px; color: #D3DAD9;"></p>
     </div>
 
     <div class="container">
-        <span>Vote here</span>
-        <input type = "number" id ="vote" placeholder="Add Index of the Voter ... ">
-        <button onclick="addVote()">Add Vote</button>
+        <span data-i18n="voting.title">Vote here</span>
+        <input type = "number" id ="vote" data-i18n="[placeholder]voting.placeholder" placeholder="Add Index of the Voter ... ">
+        <button onclick="addVote()" data-i18n="voting.submit">Add Vote</button>
         <p id="cand"></p>
     </div>
 
 	<div class="container">
-		<span>All Candidates</span>
-		<button onclick="getCandidateNames()">Refresh Candidates</button>
-		<p id="p3">Connect your wallet to view candidates</p>
+		<span data-i18n="candidates.title">All Candidates</span>
+		<button onclick="getCandidateNames()" data-i18n="candidates.refresh">Refresh Candidates</button>
+		<p id="p3" data-i18n="candidates.connectToView">Connect your wallet to view candidates</p>
 
 		<table id="candidatesTable">
 			<thead>
 				<tr>
-					<th>Index</th>
-					<th>Candidate name</th>
+					<th data-i18n="candidates.index">Index</th>
+					<th data-i18n="candidates.name">Candidate name</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -555,5 +599,70 @@
 			</tbody>
 		</table>
 	</div>
+
+	<!-- QR Code Section -->
+	<div class="container">
+		<button class="qr-toggle-btn" onclick="toggleQRSection()">
+			<span data-i18n="qr.generate">📱 Generate QR Code</span>
+		</button>
+		<div id="qrCodeDisplay" style="display: none; margin-top: 20px;"></div>
+	</div>
+
+	<!-- QR Code Modal -->
+	<div id="qrModal" class="qr-modal">
+		<div class="qr-modal-content">
+			<button class="qr-modal-close" onclick="closeQRModal()">×</button>
+			<div id="qrModalContent"></div>
+		</div>
+	</div>
+
+	<script>
+		// QR Code Section Toggle
+		let qrSectionVisible = false;
+		
+		async function toggleQRSection() {
+			const qrDisplay = document.getElementById('qrCodeDisplay');
+			const toggleBtn = document.querySelector('.qr-toggle-btn');
+			
+			qrSectionVisible = !qrSectionVisible;
+			
+			if (qrSectionVisible) {
+				qrDisplay.style.display = 'block';
+				toggleBtn.innerHTML = '<span data-i18n="qr.hide">🔽 Hide QR Code</span>';
+				
+				// Re-translate the button
+				if (typeof languageManager !== 'undefined' && languageManager.initialized) {
+					languageManager.updateUI();
+				}
+				
+				// Generate QR code
+				const electionName = currentElectionName || 'Current Election';
+				try {
+					await qrManager.generateAndDisplay(electionName, qrDisplay);
+				} catch (error) {
+					console.error('QR generation failed:', error);
+				}
+			} else {
+				qrDisplay.style.display = 'none';
+				toggleBtn.innerHTML = '<span data-i18n="qr.generate">📱 Generate QR Code</span>';
+				
+				// Re-translate the button
+				if (typeof languageManager !== 'undefined' && languageManager.initialized) {
+					languageManager.updateUI();
+				}
+			}
+		}
+		
+		function closeQRModal() {
+			document.getElementById('qrModal').classList.remove('active');
+		}
+		
+		// Close modal on outside click
+		document.getElementById('qrModal')?.addEventListener('click', function(e) {
+			if (e.target === this) {
+				closeQRModal();
+			}
+		});
+	</script>
 </body>
 </html>

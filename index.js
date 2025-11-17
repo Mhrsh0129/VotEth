@@ -40,6 +40,9 @@ const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 
 const contractInstance = new ethers.Contract(CONTRACT_ADDRESS, abi, signer);
 
+// QR Code Generation
+const { generateQRBuffer, generateQRDataURL } = require('./scripts/generate-qr');
+
 // ==== Automatic Results Logger (saves when voting ends) ====
 const LOG_PATH = path.join(__dirname, 'contract-addresses.txt');
 let lastVotingActive = null;
@@ -218,6 +221,66 @@ app.get("/getRemainingTime", async (req, res) => {
         res.json({ remainingTime: remainingTime.toString() });
     } catch (error) {
         console.error("Error getting remaining time:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ==== QR Code Generation Endpoints ====
+
+/**
+ * Generate QR code for current election
+ * GET /api/qr/generate?election=<name>
+ */
+app.get("/api/qr/generate", async (req, res) => {
+    try {
+        const electionName = req.query.election || 'Current Election';
+        const baseUrl = req.query.baseUrl || 'https://vot-eth.vercel.app';
+        
+        const votingUrl = `${baseUrl}?contract=${CONTRACT_ADDRESS}&election=${encodeURIComponent(electionName)}`;
+        
+        const qrBuffer = await generateQRBuffer(votingUrl);
+        
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Content-Disposition', `inline; filename="qr_${electionName.replace(/[^a-z0-9]/gi, '_')}.png"`);
+        res.send(qrBuffer);
+        
+        console.log(`✅ QR code generated for: ${electionName}`);
+    } catch (error) {
+        console.error("Error generating QR code:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+/**
+ * Generate QR code as data URL (base64) for inline display
+ * GET /api/qr/data?contract=<address>&election=<name>
+ */
+app.get("/api/qr/data", async (req, res) => {
+    try {
+        const contractAddress = req.query.contract || CONTRACT_ADDRESS;
+        const electionName = req.query.election || 'Election';
+        const baseUrl = req.query.baseUrl || 'https://vot-eth.vercel.app';
+        
+        // Validate contract address
+        if (!contractAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
+            return res.status(400).json({ error: 'Invalid contract address format' });
+        }
+        
+        const votingUrl = `${baseUrl}?contract=${contractAddress}&election=${encodeURIComponent(electionName)}`;
+        
+        const dataUrl = await generateQRDataURL(votingUrl);
+        
+        res.json({ 
+            success: true,
+            dataUrl,
+            votingUrl,
+            electionName,
+            contractAddress
+        });
+        
+        console.log(`✅ QR data URL generated for: ${electionName}`);
+    } catch (error) {
+        console.error("Error generating QR data URL:", error);
         res.status(500).json({ error: error.message });
     }
 });

@@ -13,7 +13,8 @@
     "addresses:list": "node scripts/manage-addresses.js list",
     "addresses:export": "node scripts/manage-addresses.js export",
     "results:save": "node scripts/save-results.js latest",
-    "results:save:addr": "node scripts/save-results.js"
+    "results:save:addr": "node scripts/save-results.js",
+    "qr:generate": "node scripts/generate-qr.js"
   },
   "author": "",
   "license": "ISC",
@@ -22,14 +23,19 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@nomiclabs/hardhat-ethers": "^2.2.2",
     "@walletconnect/ethereum-provider": "^2.16.1",
+    "chart.js": "^4.4.1",
     "dotenv": "^16.4.5",
     "ethers": "^5.8.0",
     "express": "^4.21.1",
     "express-fileupload": "^1.5.1",
     "express-rate-limit": "^8.2.1",
     "hardhat": "^2.22.17",
+    "i18next": "^25.6.2",
+    "i18next-browser-languagedetector": "^8.2.0",
+    "i18next-http-backend": "^3.0.2",
     "open": "^10.2.0",
     "path": "^0.12.7",
+    "qrcode": "^1.5.4",
     "web3modal": "^1.9.12"
   },
   "devDependencies": {

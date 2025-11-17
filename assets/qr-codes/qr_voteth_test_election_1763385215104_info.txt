@@ -1,0 +1,10 @@
+{
+  "electionName": "VotEth Test Election",
+  "contractAddress": "0x50bc25f0878B5081Bf00870643C74DDe6df64756",
+  "votingUrl": "https://vot-eth.vercel.app?contract=0x50bc25f0878B5081Bf00870643C74DDe6df64756&election=VotEth%20Test%20Election",
+  "generatedAt": "2025-11-17T13:13:35.226Z",
+  "files": {
+    "png": "qr_voteth_test_election_1763385215104.png",
+    "svg": "qr_voteth_test_election_1763385215104.svg"
+  }
+}
