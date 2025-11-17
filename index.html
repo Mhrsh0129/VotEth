@@ -602,7 +602,7 @@
 
 	<!-- QR Code Section -->
 	<div class="container">
-		<button class="qr-toggle-btn" onclick="toggleQRSection()">
+		<button class="qr-toggle-btn">
 			<span data-i18n="qr.generate">📱 Generate QR Code</span>
 		</button>
 		<div id="qrCodeDisplay" style="display: none; margin-top: 20px;"></div>
@@ -611,7 +611,7 @@
 	<!-- QR Code Modal -->
 	<div id="qrModal" class="qr-modal">
 		<div class="qr-modal-content">
-			<button class="qr-modal-close" onclick="closeQRModal()">×</button>
+			<button class="qr-modal-close">×</button>
 			<div id="qrModalContent"></div>
 		</div>
 	</div>
@@ -620,10 +620,32 @@
 		// QR Code Section Toggle
 		let qrSectionVisible = false;
 		
-		// Initialize QR Manager after DOM loads
+		// Initialize QR Manager and attach event listeners after DOM loads
 		let qrManager = null;
 		window.addEventListener('DOMContentLoaded', () => {
 			qrManager = new QRManager();
+			
+			// Attach click event to QR toggle button
+			const qrToggleBtn = document.querySelector('.qr-toggle-btn');
+			if (qrToggleBtn) {
+				qrToggleBtn.addEventListener('click', toggleQRSection);
+			}
+			
+			// Attach close modal events
+			const qrModalCloseBtn = document.querySelector('.qr-modal-close');
+			if (qrModalCloseBtn) {
+				qrModalCloseBtn.addEventListener('click', closeQRModal);
+			}
+			
+			// Close modal on outside click
+			const qrModal = document.getElementById('qrModal');
+			if (qrModal) {
+				qrModal.addEventListener('click', function(e) {
+					if (e.target === this) {
+						closeQRModal();
+					}
+				});
+			}
 		});
 		
 		async function toggleQRSection() {
@@ -667,13 +689,6 @@
 		function closeQRModal() {
 			document.getElementById('qrModal').classList.remove('active');
 		}
-		
-		// Close modal on outside click
-		document.getElementById('qrModal')?.addEventListener('click', function(e) {
-			if (e.target === this) {
-				closeQRModal();
-			}
-		});
 	</script>
 </body>
 </html>
