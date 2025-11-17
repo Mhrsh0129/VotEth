@@ -26,8 +26,8 @@ const i18nextConfig = {
     
     // Detection configuration
     detection: {
-        // Order of detection methods
-        order: ['localStorage', 'navigator', 'htmlTag'],
+        // Order of detection methods - localStorage first to respect user choice
+        order: ['localStorage', 'navigator'],
         
         // Keys to lookup language from
         lookupLocalStorage: 'voteth_language',
@@ -36,7 +36,10 @@ const i18nextConfig = {
         caches: ['localStorage'],
         
         // Exclude certain languages from being detected
-        excludeCacheFor: ['cimode']
+        excludeCacheFor: ['cimode'],
+        
+        // Check cache validity to prevent auto-reset
+        checkWhitelist: true
     },
     
     // Interpolation configuration
@@ -91,6 +94,15 @@ class LanguageManager {
 
             this.currentLang = i18next.language;
             this.initialized = true;
+            
+            // Lock the language to prevent auto-detection changes
+            if (localStorage.getItem('voteth_language')) {
+                const savedLang = localStorage.getItem('voteth_language');
+                if (savedLang !== i18next.language) {
+                    await i18next.changeLanguage(savedLang);
+                    this.currentLang = savedLang;
+                }
+            }
 
             console.log('✅ i18next initialized successfully');
             console.log('📍 Current language:', this.currentLang);
@@ -119,12 +131,12 @@ class LanguageManager {
         }
 
         try {
+            // Save to localStorage FIRST to prevent detection override
+            localStorage.setItem('voteth_language', lang);
+            
             await i18next.changeLanguage(lang);
             this.currentLang = lang;
             this.updateUI();
-            
-            // Save to localStorage
-            localStorage.setItem('voteth_language', lang);
             
             console.log('✅ Language changed to:', this.languages[lang].nativeName);
             

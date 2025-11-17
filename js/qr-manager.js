@@ -29,7 +29,15 @@ class QRManager {
             `;
 
             // Get current contract address from config or main.js global variable
-            const contractAddress = window.contractAddress || (typeof contractAddress !== 'undefined' ? contractAddress : '0x50bc25f0878B5081Bf00870643C74DDe6df64756');
+            let contractAddr;
+            if (typeof window.contractAddress !== 'undefined') {
+                contractAddr = window.contractAddress;
+            } else if (typeof contractAddress !== 'undefined') {
+                contractAddr = contractAddress;
+            } else {
+                contractAddr = '0x50bc25f0878B5081Bf00870643C74DDe6df64756';
+            }
+            const contractAddress = contractAddr;
             
             // Fetch QR code data from backend
             const response = await fetch(
