@@ -196,7 +196,24 @@ class VotEthChatbot {
         });
     }
 
+    hideQuickActions() {
+        const container = document.getElementById('chatbotQuickActions');
+        if (container) {
+            container.style.display = 'none';
+        }
+    }
+
+    showQuickActions() {
+        const container = document.getElementById('chatbotQuickActions');
+        if (container) {
+            container.style.display = 'flex';
+        }
+    }
+
     handleQuickAction(action) {
+        // Hide quick actions after first use
+        this.hideQuickActions();
+        
         // Add user message
         this.addMessage('user', action.label);
         
@@ -224,6 +241,9 @@ class VotEthChatbot {
 
         if (!message) return;
 
+        // Hide quick actions after first message
+        this.hideQuickActions();
+        
         // Add user message
         this.addMessage('user', message);
         inputField.value = '';
@@ -458,6 +478,7 @@ Respond helpfully to the user's question about VotEth voting platform.`;
             messagesContainer.innerHTML = '';
         }
         this.conversationHistory = [];
+        this.showQuickActions();
         this.greetUser();
     }
 
