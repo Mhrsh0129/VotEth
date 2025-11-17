@@ -260,9 +260,6 @@ class QRManager {
     }
 }
 
-// Create global instance
-const qrManager = new QRManager();
-
 // Export for module systems
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = QRManager;
