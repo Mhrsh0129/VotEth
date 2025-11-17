@@ -1,5 +1,6 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x70B10d5Cc2dBA08326d86fD844314Bf6d2d5CF08"; // Default fallback
+let contractAddress = "0x9c2A3B508069d55d99E05ed2df9a053bEa2850c3"; // Default fallback
+window.contractAddress = contractAddress; // Expose to window for QR manager
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
 let provider = null; // Current provider
@@ -55,6 +56,7 @@ async function loadConfig() {
     const response = await fetch(`/config.json?v=${cacheBuster}`);
     const config = await response.json();
     contractAddress = config.contractAddress;
+    window.contractAddress = contractAddress; // Expose to window
     configLoaded = true;
     console.log("✅ Loaded contract address from config:", contractAddress);
     console.log("📅 Config last updated:", config.lastUpdated);
@@ -298,6 +300,7 @@ const switchContract = async(newAddress, electionName = "Previous Election") => 
   }
   
   contractAddress = newAddress;
+  window.contractAddress = newAddress; // Expose to window
   currentElectionName = electionName;
   
   // Save to history

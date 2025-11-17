@@ -28,20 +28,12 @@ class QRManager {
                 </div>
             `;
 
-            // Get current contract address from config or main.js global variable
-            let contractAddr;
-            if (typeof window.contractAddress !== 'undefined') {
-                contractAddr = window.contractAddress;
-            } else if (typeof contractAddress !== 'undefined') {
-                contractAddr = contractAddress;
-            } else {
-                contractAddr = '0x50bc25f0878B5081Bf00870643C74DDe6df64756';
-            }
-            const contractAddress = contractAddr;
+            // Get current contract address - now properly exposed on window
+            const contractAddr = window.contractAddress || '0x50bc25f0878B5081Bf00870643C74DDe6df64756';
             
             // Fetch QR code data from backend
             const response = await fetch(
-                `${this.serverUrl}/api/qr/data?contract=${contractAddress}&election=${encodeURIComponent(electionName)}`
+                `${this.serverUrl}/api/qr/data?contract=${contractAddr}&election=${encodeURIComponent(electionName)}`
             );
 
             if (!response.ok) {
