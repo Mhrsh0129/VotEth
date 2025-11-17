@@ -619,11 +619,13 @@
 	<script>
 		// QR Code Section Toggle
 		let qrSectionVisible = false;
+		let qrManager = null;
 		
 		// Initialize QR Manager and attach event listeners after DOM loads
-		let qrManager = null;
 		window.addEventListener('DOMContentLoaded', () => {
-			qrManager = new QRManager();
+			if (!qrManager) {
+				qrManager = new QRManager();
+			}
 			
 			// Attach click event to QR toggle button
 			const qrToggleBtn = document.querySelector('.qr-toggle-btn');

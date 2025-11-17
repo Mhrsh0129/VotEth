@@ -31,7 +31,18 @@ var port = 3000;
 
 const API_URL = process.env.API_URL;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+
+// Load contract address from env or config.json
+let CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+if (!CONTRACT_ADDRESS) {
+    try {
+        const config = require('./config.json');
+        CONTRACT_ADDRESS = config.contractAddress;
+        console.log('📋 Contract address loaded from config.json');
+    } catch (e) {
+        console.warn('⚠️ Failed to load config.json, using env variable');
+    }
+}
 
 const {abi} = require('./artifacts/contracts/Voting.sol/Voting.json');
 const provider = new ethers.providers.JsonRpcProvider(API_URL);
