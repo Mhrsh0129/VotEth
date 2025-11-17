@@ -617,15 +617,23 @@
 	</div>
 
 	<script>
-		// Initialize QR Manager
-		const qrManager = new QRManager();
-		
 		// QR Code Section Toggle
 		let qrSectionVisible = false;
+		
+		// Initialize QR Manager after DOM loads
+		let qrManager = null;
+		window.addEventListener('DOMContentLoaded', () => {
+			qrManager = new QRManager();
+		});
 		
 		async function toggleQRSection() {
 			const qrDisplay = document.getElementById('qrCodeDisplay');
 			const toggleBtn = document.querySelector('.qr-toggle-btn');
+			
+			// Initialize QR manager if not already done
+			if (!qrManager) {
+				qrManager = new QRManager();
+			}
 			
 			qrSectionVisible = !qrSectionVisible;
 			
