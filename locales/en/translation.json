@@ -49,7 +49,32 @@
     "connectToView": "Connect your wallet to view candidates",
     "index": "Index",
     "name": "Candidate name",
-    "voteCount": "Vote Count"
+    "voteCount": "Vote Count",
+    "preview": "Candidate Overview",
+    "previewDesc": "Live vote counts and rankings",
+    "connectWallet": "Connect Wallet",
+    "toView": "to view candidates"
+  },
+  "blockchain": {
+    "title": "Blockchain-Powered Voting",
+    "totalVotes": "Total Votes Cast",
+    "participation": "Voter Turnout",
+    "candidates": "Candidates"
+  },
+  "trust": {
+    "verified": "Verified Contract",
+    "secure": "Secure Voting",
+    "transparent": "100% Transparent"
+  },
+  "info": {
+    "electionName": "Election Name",
+    "electionDesc": "Official election title",
+    "timeRemaining": "Time Remaining",
+    "timeDesc": "Until voting closes",
+    "network": "Network",
+    "networkDesc": "Ethereum Testnet",
+    "contract": "Smart Contract",
+    "contractDesc": "View on Etherscan"
   },
   "results": {
     "title": "Election Results",

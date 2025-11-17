@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x173Ee495485467C7F43177606109cfB648e416F8"; // Valid Sepolia deployment (verified on Etherscan)
+let contractAddress = "0xEF8e7bAdCA770d5D35864F7D1e044D3eCbbd5D93"; // Valid Sepolia deployment (verified on Etherscan)
 window.contractAddress = contractAddress; // Expose to window for QR manager
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
@@ -516,6 +516,7 @@ window.connectMetamask = async() => {
       const basicTable = document.getElementById("candidatesTable");
       if (basicTable) {
         await getCandidateNames();
+        await updateCandidatePreviewCards(); // Update preview cards
         // Start auto-updating voting status on homepage
         startVotingStatusUpdates();
       } else {
@@ -611,6 +612,93 @@ const updateWalletConnectionUI = () => {
       element.style.color = "#00FF00";
     } else {
       element.textContent = "";
+    }
+  }
+};
+
+// Update candidate preview cards with live data
+window.updateCandidatePreviewCards = async() => {
+  const grid = document.getElementById('candidatesPreviewGrid');
+  if (!grid) return;
+
+  if (!WALLET_CONNECTED || !provider) {
+    // Show placeholder card when wallet not connected
+    grid.innerHTML = `
+      <div class="candidate-card" style="opacity: 0.6;">
+        <div class="candidate-avatar">🗳️</div>
+        <div class="candidate-name" data-i18n="candidates.connectWallet">Connect Wallet</div>
+        <div class="candidate-index" data-i18n="candidates.toView">to view candidates</div>
+        <div class="vote-count">--</div>
+        <div class="vote-progress">
+          <div class="vote-progress-bar" style="width: 0%;"></div>
+        </div>
+        <div class="vote-percentage">0%</div>
+      </div>
+    `;
+    return;
+  }
+
+  try {
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
+    const signer = ethersProvider.getSigner();
+    const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
+    
+    const candidates = await contractInstance.getAllVotesOfCandidates();
+    const totalVotes = candidates.reduce((sum, c) => sum + parseInt(c.voteCount.toString()), 0);
+    
+    // Update stats
+    document.getElementById('totalVotesCount').textContent = totalVotes;
+    document.getElementById('candidateCount').textContent = candidates.length;
+    
+    // Calculate participation (assuming 100 max voters for demo)
+    const participationRate = Math.min(100, Math.floor((totalVotes / 100) * 100));
+    document.getElementById('participationRate').textContent = participationRate + '%';
+    
+    // Candidate emojis for visual appeal
+    const candidateEmojis = ['🔴', '🔵', '🟢', '🟡', '🟣', '🟠', '⚪', '⚫'];
+    
+    // Generate cards
+    grid.innerHTML = candidates.map((candidate, index) => {
+      const voteCount = parseInt(candidate.voteCount.toString());
+      const percentage = totalVotes > 0 ? Math.floor((voteCount / totalVotes) * 100) : 0;
+      const emoji = candidateEmojis[index % candidateEmojis.length];
+      
+      return `
+        <div class="candidate-card">
+          <div class="candidate-avatar">${emoji}</div>
+          <div class="candidate-name">${candidate.name}</div>
+          <div class="candidate-index">Index: ${index}</div>
+          <div class="vote-count">${voteCount} ${voteCount === 1 ? 'vote' : 'votes'}</div>
+          <div class="vote-progress">
+            <div class="vote-progress-bar" style="width: ${percentage}%;"></div>
+          </div>
+          <div class="vote-percentage">${percentage}%</div>
+        </div>
+      `;
+    }).join('');
+    
+    // Update contract info
+    const shortAddress = contractAddress.slice(0, 6) + '...' + contractAddress.slice(-4);
+    document.getElementById('contractShort').textContent = shortAddress;
+    document.getElementById('etherscanLink').href = `https://sepolia.etherscan.io/address/${contractAddress}`;
+    
+    // Update election name
+    document.getElementById('electionNameInfo').textContent = currentElectionName || 'Current Election';
+    
+  } catch (error) {
+    console.error('Error updating preview cards:', error);
+  }
+};
+
+// Update time remaining in info panel
+window.updateTimeRemaining = () => {
+  const timeElement = document.getElementById('time');
+  const infoTimeElement = document.getElementById('timeRemainingInfo');
+  
+  if (timeElement && timeElement.textContent) {
+    const timeText = timeElement.textContent.replace('Remaining time is ', '').replace(' seconds', 's');
+    if (infoTimeElement && timeText !== '') {
+      infoTimeElement.textContent = timeText;
     }
   }
 };
@@ -799,6 +887,8 @@ const startVotingStatusUpdates = async () => {
   votingStatusInterval = setInterval(async () => {
     try {
       await voteStatus();
+      updateTimeRemaining(); // Update info panel time
+      await updateCandidatePreviewCards(); // Update preview cards
     } catch (err) {
       console.error('voteStatus interval update failed:', err);
     }
