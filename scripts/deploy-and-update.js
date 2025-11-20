@@ -64,7 +64,7 @@ async function main() {
   const Voting = await ethers.getContractFactory("Voting");
   console.log("📝 Deploying Voting contract...");
   
-  const candidates = ["BJP", "NDA", "AAP", "BSPA", "INC"];
+  const candidates = ["BJP", "NDA", "AAP", "BSPA"];
   
   const Voting_ = await Voting.deploy(candidates, duration);
   await Voting_.deployed();
