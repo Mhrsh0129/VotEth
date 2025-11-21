@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x7C4c318EB10ae1ED6482dD15214e0A5534d2DF6A"; // Valid Sepolia deployment (verified on Etherscan)
+let contractAddress = "0x95972d2B7036A0af496AFc7Cad2038734db199cD"; // Valid Sepolia deployment (verified on Etherscan)
 window.contractAddress = contractAddress; // Expose to window for QR manager
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
@@ -334,7 +334,7 @@ const updateElectionDisplay = () => {
   const electionDisplay = document.getElementById("currentElectionDisplay");
   if (electionDisplay) {
     electionDisplay.innerHTML = `
-      <strong>Election:</strong> ${currentElectionName}<br>
+      <strong>${currentElectionName}</strong><br>
       <small>Contract: ${contractAddress.substring(0, 6)}...${contractAddress.substring(38)}</small>
     `;
     // If a dedicated full-address element exists (homepage), populate it as well

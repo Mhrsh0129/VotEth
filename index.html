@@ -62,20 +62,18 @@
 			--accent-color: #FFD700;
 		}
 
-		body.light-theme {
-			--bg-color: #FFF2C6;
-			--text-color: #1a1a1a;
-			--card-bg: #FFF8DE;
-			--border-color: #AAC4F5;
-			--table-header-bg: #AAC4F5;
-			--button-bg: #8CA9FF;
-			--button-text: #ffffff;
-			--input-bg: #FFF8DE;
-			--secondary-text: #5f6368;
-			--accent-color: #8CA9FF;
-		}
-
-		body {
+	body.light-theme {
+		--bg-color: #EFECE3;
+		--text-color: #000000;
+		--card-bg: #FFF8DE;
+		--border-color: #AAC4F5;
+		--table-header-bg: #AAC4F5;
+		--button-bg: #BF124D;
+		--button-text: #000000;
+		--input-bg: #FFF8DE;
+		--secondary-text: #000000;
+		--accent-color: #BF124D;
+	}		body {
 			background-color: var(--bg-color);
 			color: var(--text-color);
 			font-family: Arial, sans-serif;
@@ -229,6 +227,10 @@
 			padding-bottom: 4px;
 		}
 
+		body.light-theme .navbar {
+			background-color: #000000;
+		}
+
 		.navbar-links {
 			display: flex;
 		}
@@ -241,6 +243,10 @@
 			padding: 10px 20px;
 			text-decoration: none;
 			transition: all 0.3s ease;
+		}
+
+		body.light-theme .navbar a {
+			color: #ffffff;
 		}
 
 		/* Change the color of links on hover */
@@ -275,6 +281,19 @@
         font-weight: bold;
         color: var(--accent-color);
         }
+
+	body.light-theme #myTable th,
+	body.light-theme #candidatesTable th {
+		background-color: #8FABD4;
+		color: #000000;
+	}
+
+	body.light-theme #myTable td,
+	body.light-theme #candidatesTable td {
+		background-color: #EFECE3;
+		color: #000000;
+		border-color: #4A70A9;
+	}
 
 	/* Contract/Election Display Box */
 	.election-display-box {
@@ -562,6 +581,10 @@
 		border-color: var(--accent-color);
 	}
 
+	body.light-theme .candidate-card {
+		background: #ffffff;
+	}
+
 	.candidate-avatar {
 		width: 80px;
 		height: 80px;
@@ -696,6 +719,22 @@
 		border-radius: 12px;
 		position: relative;
 		overflow: hidden;
+	}
+
+	body.light-theme .blockchain-visual {
+		background: #ffffff;
+	}
+
+	body.light-theme #metamasknotification {
+		color: #132440 !important;
+	}
+
+	body.light-theme #status {
+		color: #132440 !important;
+	}
+
+	body.light-theme #time {
+		color: #000000 !important;
 	}
 
 	.blockchain-title {
@@ -961,7 +1000,7 @@
 	<div class="container">
 		<div id="currentElectionDisplay" class="election-display-box">
 			<strong data-i18n="election.current">Current Election</strong><br><br>
-			<strong><span data-i18n="election.current">Election</span>:</strong> Current Election<br>
+			<strong><span data-i18n="election.current"></span></strong> Current Election<br>
 			<small data-i18n="wallet.connectPrompt">Connect wallet to view details</small>
 			<div class="contract-address-full">
 				<span data-i18n="election.contractFull">Contract (full): </span><span id="contractFullAddress">—</span>
@@ -976,7 +1015,7 @@
 
     <div class="container">
         <span data-i18n="voting.title">Vote here</span>
-        <input type = "number" id ="vote" data-i18n="[placeholder]voting.placeholder" placeholder="Add Index of the Voter ... ">
+        <input type = "number" id ="vote" data-i18n=" " placeholder="Add Index of the Voter ... ">
         <button onclick="addVote()" data-i18n="voting.submit">Add Vote</button>
         <p id="cand"></p>
     </div>
