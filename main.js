@@ -1,5 +1,5 @@
 let WALLET_CONNECTED = "";
-let contractAddress = "0x8644A4254906505945C64D1BE5903eA4f74A9a84"; // Valid Sepolia deployment (verified on Etherscan)
+let contractAddress = "0x0C936af14fe01d29126ebdbc7F18FDfBEac6B4E1"; // Valid Sepolia deployment (verified on Etherscan)
 window.contractAddress = contractAddress; // Expose to window for QR manager
 let currentElectionName = "Current Election"; // Track which election we're viewing
 let configLoaded = false; // Track if config has been loaded
