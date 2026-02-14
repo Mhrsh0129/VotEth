@@ -30,3 +30,13 @@ Thumbs.db
 # Screenshots / generated assets
 screenshots/*.tmp
 *.png.tmp
+
+# Auto-generated
+face_data.db
+contract-addresses.txt
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+face-service/venv*/

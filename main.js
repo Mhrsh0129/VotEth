@@ -6,6 +6,21 @@ let configLoaded = false; // Track if config has been loaded
 let provider = null; // Current provider
 let walletType = ""; // Track wallet type
 
+// ========================================
+// TOAST NOTIFICATION SYSTEM
+// ========================================
+window.showToast = (message, type = 'info', duration = 5000) => {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = message;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.remove();
+  }, duration);
+};
+
 // Event handler references for cleanup
 let accountsChangedHandler = null;
 let chainChangedHandler = null;
@@ -17,9 +32,9 @@ let disconnectHandler = null;
 // ========================================
 function toggleTheme() {
   const body = document.body;
-  
+
   body.classList.toggle('light-theme');
-  
+
   // Save preference
   if (body.classList.contains('light-theme')) {
     localStorage.setItem('theme', 'light');
@@ -32,7 +47,7 @@ function toggleTheme() {
 function loadSavedTheme() {
   const savedTheme = localStorage.getItem('theme');
   const body = document.body;
-  
+
   if (savedTheme === 'light') {
     body.classList.add('light-theme');
   } else {
@@ -60,11 +75,11 @@ async function loadConfig() {
     configLoaded = true;
     console.log("✅ Loaded contract address from config:", contractAddress);
     console.log("📅 Config last updated:", config.lastUpdated);
-    
+
     // Update contract address display if element exists
     const fullEl = document.getElementById("fullContractAddress");
     if (fullEl) fullEl.textContent = contractAddress;
-    
+
     return config;
   } catch (error) {
     console.warn("⚠️ Failed to load config.json, using fallback address:", error);
@@ -89,14 +104,14 @@ const SEPOLIA_CHAIN_ID = 11155111; // Sepolia testnet
 const NETWORK_NAME = "Sepolia";
 
 // Check if user is on correct network
-const checkNetwork = async() => {
+const checkNetwork = async () => {
   try {
     if (!window.ethereum && !provider) {
       return false;
     }
     const ethersProvider = provider ? new ethers.providers.Web3Provider(provider) : new ethers.providers.Web3Provider(window.ethereum);
     const network = await ethersProvider.getNetwork();
-    
+
     if (network.chainId !== SEPOLIA_CHAIN_ID) {
       alert(`⚠️ Wrong Network!\n\nPlease switch to ${NETWORK_NAME} testnet in MetaMask.\n\nCurrent: ${network.name}\nRequired: ${NETWORK_NAME}`);
       return false;
@@ -109,200 +124,263 @@ const checkNetwork = async() => {
 };
 
 let contractAbi = [
-    {
-      "inputs": [
-        {
-          "internalType": "string[]",
-          "name": "_candidateNames",
-          "type": "string[]"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_durationInMinutes",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_name",
-          "type": "string"
-        }
-      ],
-      "name": "addCandidate",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "candidates",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "uint256",
-          "name": "voteCount",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getAllVotesOfCandidates",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "voteCount",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct Voting.Candidate[]",
-          "name": "",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getRemainingTime",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getVotingStatus",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_candidateIndex",
-          "type": "uint256"
-        },
-        {
-          "internalType": "bytes",
-          "name": "signature",
-          "type": "bytes"
-        }
-      ],
-      "name": "vote",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "verificationSigner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_signer",
-          "type": "address"
-        }
-      ],
-      "name": "setVerificationSigner",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "voters",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "votingEnd",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "votingStart",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    }
-  ];
+  {
+    "inputs": [
+      {
+        "internalType": "string[]",
+        "name": "_candidateNames",
+        "type": "string[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_durationInMinutes",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      }
+    ],
+    "name": "addCandidate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "candidates",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "voteCount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllVotesOfCandidates",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "voteCount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Voting.Candidate[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRemainingTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getVotingStatus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_candidateIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      }
+    ],
+    "name": "vote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "verificationSigner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_signer",
+        "type": "address"
+      }
+    ],
+    "name": "setVerificationSigner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "voters",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "votingEnd",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "votingStart",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalVotes",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_voter",
+        "type": "address"
+      }
+    ],
+    "name": "hasVoted",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getCandidateCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getWinningCandidate",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "winnerName",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "winnerVoteCount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+];
 
 // Load saved elections from localStorage
 const getSavedElections = () => {
@@ -324,22 +402,22 @@ const saveElection = (address, name) => {
 };
 
 // Switch to a different contract address
-const switchContract = async(newAddress, electionName = "Previous Election") => {
+const switchContract = async (newAddress, electionName = "Previous Election") => {
   if (!ethers.utils.isAddress(newAddress)) {
     alert("Invalid contract address!");
     return;
   }
-  
+
   contractAddress = newAddress;
   window.contractAddress = newAddress; // Expose to window
   currentElectionName = electionName;
-  
+
   // Save to history
   saveElection(newAddress, electionName);
-  
+
   // Update UI to show which election
   updateElectionDisplay();
-  
+
   // Refresh data if wallet is connected
   if (WALLET_CONNECTED) {
     try {
@@ -379,9 +457,9 @@ const showElectionsHistory = () => {
   const elections = getSavedElections();
   const modal = document.getElementById("electionsModal");
   const list = document.getElementById("electionsList");
-  
+
   list.innerHTML = '';
-  
+
   if (elections.length === 0) {
     list.innerHTML = '<p style="text-align: center; padding: 20px;">No saved elections yet.</p>';
   } else {
@@ -400,12 +478,12 @@ const showElectionsHistory = () => {
       list.appendChild(item);
     });
   }
-  
+
   modal.style.display = "block";
 };
 
 // Load a specific election
-const loadElection = async(address, name) => {
+const loadElection = async (address, name) => {
   document.getElementById("electionsModal").style.display = "none";
   await switchContract(address, name);
   alert(`Switched to: ${name}`);
@@ -417,21 +495,21 @@ const closeModal = () => {
 };
 
 // Manual switch from input field
-const switchContractManual = async() => {
+const switchContractManual = async () => {
   const input = document.getElementById("contractAddressInput");
   const address = input.value.trim();
-  
+
   if (!address) {
     alert("❌ Please enter a contract address!");
     return;
   }
-  
+
   // Validate Ethereum address format
   if (!ethers.utils.isAddress(address)) {
     alert("❌ Invalid Ethereum address format!\n\nPlease enter a valid address starting with '0x' followed by 40 hexadecimal characters.");
     return;
   }
-  
+
   // Check if it's a contract (has code)
   try {
     if (!window.ethereum && !provider) {
@@ -440,7 +518,7 @@ const switchContractManual = async() => {
     }
     const ethersProvider = provider ? new ethers.providers.Web3Provider(provider) : new ethers.providers.Web3Provider(window.ethereum);
     const code = await ethersProvider.getCode(address);
-    
+
     if (code === '0x') {
       alert("⚠️ This address has no contract code!\n\nPlease make sure you're using a deployed Voting contract address.");
       return;
@@ -449,21 +527,21 @@ const switchContractManual = async() => {
     console.error("Contract validation error:", err);
     alert("⚠️ Could not verify contract. Proceeding anyway...");
   }
-  
+
   const name = prompt("Enter a name for this election (optional):", "Previous Election");
   await switchContract(address, name || "Previous Election");
   input.value = ""; // Clear input
 };
 
 // Make function globally accessible for HTML onclick handlers
-window.connectMetamask = async() => {
+window.connectMetamask = async () => {
   try {
     // Wait a moment for providers to initialize
     await new Promise(resolve => setTimeout(resolve, 100));
-    
+
     // Check multiple provider locations for Phantom
     let ethereumProvider = null;
-    
+
     // Priority 1: Check window.phantom.ethereum (Phantom's Ethereum provider)
     if (window.phantom?.ethereum) {
       ethereumProvider = window.phantom.ethereum;
@@ -487,7 +565,7 @@ window.connectMetamask = async() => {
 
     // Use the detected provider
     provider = ethereumProvider;
-    
+
     // Detect wallet type
     if (window.phantom?.ethereum && provider === window.phantom.ethereum) {
       walletType = "Phantom";
@@ -512,12 +590,12 @@ window.connectMetamask = async() => {
 
     // Create ethers provider
     const ethersProvider = new ethers.providers.Web3Provider(provider);
-    
+
     // Check network
     const network = await ethersProvider.getNetwork();
     if (network.chainId !== 11155111) {
       alert(`⚠️ Wrong Network!\n\nPlease switch to Sepolia testnet in your wallet.\n\nCurrent: ${network.name}\nRequired: Sepolia`);
-      
+
       // Try to switch network
       try {
         await provider.request({
@@ -529,17 +607,18 @@ window.connectMetamask = async() => {
         return;
       }
     }
-    
+
     // Get signer and address
     const signer = ethersProvider.getSigner();
     WALLET_CONNECTED = await signer.getAddress();
     window.userAddress = WALLET_CONNECTED; // Expose for Face Verification
-    
+
     console.log(`✅ Connected with ${walletType}:`, WALLET_CONNECTED);
-    
+
     // Update UI notification
     updateWalletConnectionUI();
-    
+    showToast(`✅ ${walletType} connected: ${WALLET_CONNECTED.substring(0, 6)}...${WALLET_CONNECTED.substring(38)}`, 'success');
+
     // Update election display on connect
     updateElectionDisplay();
 
@@ -599,7 +678,7 @@ window.connectMetamask = async() => {
 }
 
 // New function to disconnect wallet
-window.disconnectWallet = async() => {
+window.disconnectWallet = async () => {
   try {
     // Remove event listeners to prevent memory leaks
     if (provider) {
@@ -649,7 +728,7 @@ const updateWalletConnectionUI = () => {
 };
 
 // Update candidate preview cards with live data
-window.updateCandidatePreviewCards = async() => {
+window.updateCandidatePreviewCards = async () => {
   const grid = document.getElementById('candidatesPreviewGrid');
   if (!grid) return;
 
@@ -674,27 +753,27 @@ window.updateCandidatePreviewCards = async() => {
     const ethersProvider = new ethers.providers.Web3Provider(provider);
     const signer = ethersProvider.getSigner();
     const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
-    
+
     const candidates = await contractInstance.getAllVotesOfCandidates();
     const totalVotes = candidates.reduce((sum, c) => sum + parseInt(c.voteCount.toString()), 0);
-    
+
     // Update stats
     document.getElementById('totalVotesCount').textContent = totalVotes;
     document.getElementById('candidateCount').textContent = candidates.length;
-    
+
     // Calculate participation (assuming 100 max voters for demo)
     const participationRate = Math.min(100, Math.floor((totalVotes / 100) * 100));
     document.getElementById('participationRate').textContent = participationRate + '%';
-    
+
     // Candidate emojis for visual appeal
     const candidateEmojis = ['🔴', '🔵', '🟢', '🟡', '🟣', '🟠', '⚪', '⚫'];
-    
+
     // Generate cards
     grid.innerHTML = candidates.map((candidate, index) => {
       const voteCount = parseInt(candidate.voteCount.toString());
       const percentage = totalVotes > 0 ? Math.floor((voteCount / totalVotes) * 100) : 0;
       const emoji = candidateEmojis[index % candidateEmojis.length];
-      
+
       return `
         <div class="candidate-card">
           <div class="candidate-avatar">${emoji}</div>
@@ -708,15 +787,15 @@ window.updateCandidatePreviewCards = async() => {
         </div>
       `;
     }).join('');
-    
+
     // Update contract info
     const shortAddress = contractAddress.slice(0, 6) + '...' + contractAddress.slice(-4);
     document.getElementById('contractShort').textContent = shortAddress;
     document.getElementById('etherscanLink').href = `https://sepolia.etherscan.io/address/${contractAddress}`;
-    
+
     // Update election name
     document.getElementById('electionNameInfo').textContent = currentElectionName || 'Current Election';
-    
+
   } catch (error) {
     console.error('Error updating preview cards:', error);
   }
@@ -726,7 +805,7 @@ window.updateCandidatePreviewCards = async() => {
 window.updateTimeRemaining = () => {
   const timeElement = document.getElementById('time');
   const infoTimeElement = document.getElementById('timeRemainingInfo');
-  
+
   if (timeElement && timeElement.textContent) {
     const timeText = timeElement.textContent.replace('Remaining time is ', '').replace(' seconds', 's');
     if (infoTimeElement && timeText !== '') {
@@ -736,32 +815,32 @@ window.updateTimeRemaining = () => {
 };
 
 // Make globally accessible for HTML onclick
-window.getCandidateNames = async() => {
+window.getCandidateNames = async () => {
   var p3 = document.getElementById("p3");
-  
+
   // Check if wallet is connected first
-  if(!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
+  if (!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
     p3.innerHTML = "⚠️ Please connect your wallet first to view candidates";
     p3.className = "warning-text";
     p3.style.color = "orange";
     return;
   }
-  
+
   // Wait for config to load
   if (!configLoaded) {
     await loadConfig();
   }
-  
-  if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
+
+  if (WALLET_CONNECTED && WALLET_CONNECTED !== "") {
     try {
       p3.innerHTML = '⏳ Loading candidates<span class="spinner"></span>';
       p3.className = "loading-text";
-      
+
       // Use the connected provider instead of creating a new one
       const ethersProvider = new ethers.providers.Web3Provider(provider);
       const signer = ethersProvider.getSigner();
       const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
-      
+
       var candidates = await contractInstance.getAllVotesOfCandidates();
       var table = document.getElementById("candidatesTable");
 
@@ -802,111 +881,154 @@ window.getCandidateNames = async() => {
   }
 }
 
+// Helper to get max valid candidate index
+async function getMaxCandidateIndex() {
+  try {
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
+    const signer = ethersProvider.getSigner();
+    const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
+    const candidates = await contractInstance.getAllVotesOfCandidates();
+    return candidates.length - 1;
+  } catch {
+    return "?";
+  }
+}
+
 // Make globally accessible for HTML onclick
-window.addVote = async() => {
-    // Face Verification Check
-    if (window.checkFaceVerification && !window.checkFaceVerification()) {
-        const cand = document.getElementById("cand");
-        cand.innerHTML = "🔐 Please complete face verification before voting!";
-        cand.style.color = "#FFD700";
-        cand.className = "error-text";
-        
-        // Scroll to face verification section if it exists
-        const faceSection = document.getElementById('faceVerificationSection');
-        if (faceSection) {
-            faceSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return;
+window.addVote = async () => {
+  // Face Verification Check
+  if (window.checkFaceVerification && !window.checkFaceVerification()) {
+    const cand = document.getElementById("cand");
+    cand.innerHTML = "🔐 Please complete face verification before voting!";
+    cand.style.color = "#FFD700";
+    cand.className = "error-text";
+
+    // Scroll to face verification section if it exists
+    const faceSection = document.getElementById('faceVerificationSection');
+    if (faceSection) {
+      faceSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return;
+  }
+
+  // Wait for config to load
+  if (!configLoaded) {
+    await loadConfig();
+  }
+
+  if (WALLET_CONNECTED && WALLET_CONNECTED !== "") {
+    var candidateIndexInput = document.getElementById("vote");
+    var cand = document.getElementById("cand");
+
+    // Input validation
+    const indexValue = candidateIndexInput.value.trim();
+
+    if (indexValue === "") {
+      cand.innerHTML = "❌ Please enter a candidate number";
+      cand.style.color = "red";
+      return;
     }
 
-    // Wait for config to load
-    if (!configLoaded) {
-        await loadConfig();
+    const candidateIndex = parseInt(indexValue);
+
+    if (isNaN(candidateIndex)) {
+      cand.innerHTML = "❌ Please enter a valid number";
+      cand.style.color = "red";
+      return;
     }
-    
-    if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
-        var candidateIndexInput = document.getElementById("vote");
-        var cand = document.getElementById("cand");
-        
-        // Input validation
-        const indexValue = candidateIndexInput.value.trim();
-        
-        if (indexValue === "") {
-            cand.innerHTML = "❌ Please enter a candidate number";
-            cand.style.color = "red";
-            return;
-        }
-        
-        const candidateIndex = parseInt(indexValue);
-        
-        if (isNaN(candidateIndex)) {
-            cand.innerHTML = "❌ Please enter a valid number";
-            cand.style.color = "red";
-            return;
-        }
-        
-        if (candidateIndex < 0) {
-            cand.innerHTML = "❌ Candidate number must be 0 or greater";
-            cand.style.color = "red";
-            return;
-        }
-        
-        // Check network before voting
-        const isCorrectNetwork = await checkNetwork();
-        if (!isCorrectNetwork) {
-            cand.innerHTML = "❌ Please switch to Sepolia network";
-            cand.style.color = "red";
-            return;
-        }
-        
-        try {
-            // Use the connected provider instead of creating a new one
-            const ethersProvider = new ethers.providers.Web3Provider(provider);
-            const signer = ethersProvider.getSigner();
-            const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
-            
-            cand.innerHTML = '⏳ Submitting vote<span class="spinner"></span>';
-            cand.className = "loading-text";
-            
-            // Get verification signature if present
-            const signature = localStorage.getItem('voting_signature') || "0x";
-            
-            // Call vote with signature
-            // If the contract is old (no signature param), this might fail? 
-            // We should use check logic or try/catch fallback, but since we updated the contract code
-            // we assume the user will redeploy.
-            const tx = await contractInstance.vote(candidateIndex, signature);
-            
-            cand.innerHTML = '⏳ Confirming transaction<span class="spinner"></span>';
-            await tx.wait();
-            
-            cand.innerHTML = "✅ Vote successfully recorded!";
-            cand.className = "success-text";
-        } catch (err) {
-            console.error("Voting error:", err);
-            
-            // Better error messages
-            if (err.code === 4001) {
-                cand.innerHTML = "❌ Transaction rejected by user";
-            } else if (err.message.includes("already voted")) {
-                cand.innerHTML = "❌ You have already voted!";
-            } else if (err.message.includes("Voting is finished")) {
-                cand.innerHTML = "❌ Voting period has ended";
-            } else if (err.message.includes("Invalid candidate")) {
-                cand.innerHTML = `❌ Invalid candidate number. Please choose 0-${await getMaxCandidateIndex()}`;
-            } else {
-                cand.innerHTML = "❌ Transaction failed. Please try again.";
-            }
-            cand.style.color = "red";
-        }
+
+    if (candidateIndex < 0) {
+      cand.innerHTML = "❌ Candidate number must be 0 or greater";
+      cand.style.color = "red";
+      return;
     }
-    else {
-        var cand = document.getElementById("cand");
-        if (cand) {
-            cand.innerHTML = "❌ Please connect your wallet first";
-            cand.style.color = "red";
-        }
+
+    // Check network before voting
+    const isCorrectNetwork = await checkNetwork();
+    if (!isCorrectNetwork) {
+      cand.innerHTML = "❌ Please switch to Sepolia network";
+      cand.style.color = "red";
+      return;
     }
+
+    try {
+      // Use the connected provider instead of creating a new one
+      const ethersProvider = new ethers.providers.Web3Provider(provider);
+      const signer = ethersProvider.getSigner();
+      const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
+
+      // Disable vote button to prevent double-clicks
+      const voteBtn = document.getElementById('voteButton');
+      if (voteBtn) voteBtn.disabled = true;
+
+      cand.innerHTML = '⏳ Submitting vote<span class="spinner"></span>';
+      cand.className = "loading-text";
+
+      // Get verification signature if present
+      const signature = localStorage.getItem('voting_signature') || "0x";
+
+      // Call vote with signature
+      // If the contract is old (no signature param), this might fail? 
+      // We should use check logic or try/catch fallback, but since we updated the contract code
+      // we assume the user will redeploy.
+      const tx = await contractInstance.vote(candidateIndex, signature);
+
+      cand.innerHTML = `⏳ Confirming transaction<span class="spinner"></span><br><small><a href="https://sepolia.etherscan.io/tx/${tx.hash}" target="_blank" rel="noopener" style="color: #FFD700;">View on Etherscan ↗</a></small>`;
+      await tx.wait();
+
+      cand.innerHTML = `✅ Vote successfully recorded!<br><small><a href="https://sepolia.etherscan.io/tx/${tx.hash}" target="_blank" rel="noopener" style="color: #00FF00;">View transaction ↗</a></small>`;
+      cand.className = "success-text";
+      showToast(`🗳️ Vote recorded! <a href="https://sepolia.etherscan.io/tx/${tx.hash}" target="_blank">View tx ↗</a>`, 'success', 8000);
+
+      // Auto-refresh candidate data after voting
+      try {
+        await getCandidateNames();
+        await updateCandidatePreviewCards();
+      } catch (refreshErr) {
+        console.error('Auto-refresh after vote failed:', refreshErr);
+      }
+
+      // Re-enable button
+      if (voteBtn) voteBtn.disabled = false;
+    } catch (err) {
+      console.error("Voting error:", err);
+
+      // Re-enable vote button on error
+      const voteBtn = document.getElementById('voteButton');
+      if (voteBtn) voteBtn.disabled = false;
+
+      // Better error messages
+      if (err.code === 4001 || err.code === 'ACTION_REJECTED') {
+        cand.innerHTML = "❌ Transaction rejected by user";
+        showToast('Transaction cancelled', 'warning');
+      } else if (err.message && err.message.includes("already voted")) {
+        cand.innerHTML = "❌ You have already voted!";
+        showToast('You have already cast your vote', 'error');
+      } else if (err.message && err.message.includes("Voting is finished")) {
+        cand.innerHTML = "❌ Voting period has ended";
+        showToast('Election has ended', 'error');
+      } else if (err.message && err.message.includes("Invalid candidate")) {
+        cand.innerHTML = `❌ Invalid candidate number. Please choose 0-${await getMaxCandidateIndex()}`;
+      } else if (err.message && err.message.includes("insufficient funds")) {
+        cand.innerHTML = "❌ Insufficient ETH for gas fees";
+        showToast('Get Sepolia ETH from <a href="https://sepoliafaucet.com" target="_blank">faucet</a>', 'error', 8000);
+      } else if (err.code === -32603 || (err.message && err.message.includes("gas"))) {
+        cand.innerHTML = "❌ Transaction failed — gas estimation error";
+        showToast('Contract reverted. Check your eligibility.', 'error');
+      } else {
+        cand.innerHTML = "❌ Transaction failed. Please try again.";
+        showToast('Vote failed. Please try again.', 'error');
+      }
+      cand.style.color = "red";
+    }
+  }
+  else {
+    var cand = document.getElementById("cand");
+    if (cand) {
+      cand.innerHTML = "❌ Please connect your wallet first";
+      cand.style.color = "red";
+    }
+  }
 }
 
 let votingStatusInterval = null;
@@ -956,7 +1078,7 @@ if (typeof window !== 'undefined') {
     stopVotingStatusUpdates();
     stopResultsUpdates();
   };
-  
+
   window.addEventListener('beforeunload', cleanupAllIntervals);
   window.addEventListener('pagehide', cleanupAllIntervals);
 }
@@ -989,13 +1111,13 @@ if (typeof document !== 'undefined') {
 // Ensure the current election/contract is shown as soon as the page loads
 if (typeof window !== 'undefined') {
   window.addEventListener('load', () => {
-    try { 
+    try {
       updateElectionDisplay();
-      
+
       // Auto-load candidates and status on homepage without requiring MetaMask first
       const basicTable = document.getElementById('candidatesTable');
       const statusEl = document.getElementById('status');
-      
+
       if (basicTable && statusEl) {
         // Homepage detected - try to load data if user already connected before
         if (typeof window.ethereum !== 'undefined') {
@@ -1007,10 +1129,10 @@ if (typeof window !== 'undefined') {
                 const ethersProvider = new ethers.providers.Web3Provider(provider);
                 const signer = ethersProvider.getSigner();
                 WALLET_CONNECTED = await signer.getAddress();
-                
+
                 // Use centralized UI update for consistency
                 updateWalletConnectionUI();
-                
+
                 // Load data
                 try {
                   await getCandidateNames();
@@ -1056,145 +1178,145 @@ const startResultsUpdates = async () => {
   }, 5000);
 };
 
-const checkAndDisplayResults = async() => {
+const checkAndDisplayResults = async () => {
+  var p3 = document.getElementById("p3");
+
+  // Check if wallet is connected
+  if (!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
+    if (p3) {
+      p3.innerHTML = "⚠️ Please connect your wallet to view results";
+      p3.style.color = "orange";
+    }
+    return;
+  }
+
+  // Wait for config to load
+  if (!configLoaded) {
+    await loadConfig();
+  }
+
+  if (WALLET_CONNECTED && WALLET_CONNECTED !== "") {
+    try {
+      // Use the connected provider instead of creating a new one
+      const ethersProvider = new ethers.providers.Web3Provider(provider);
+      const signer = ethersProvider.getSigner();
+      const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
+
+      // Check voting status
+      const currentStatus = await contractInstance.getVotingStatus();
+      const votingOngoingMessage = document.getElementById("votingOngoingMessage");
+      const resultsTableContainer = document.getElementById("resultsTableContainer");
+      const showResultsBtn = document.getElementById("showResultsBtn");
+
+      if (currentStatus) {
+        // Voting is still ongoing
+        votingOngoingMessage.classList.remove("hidden");
+        resultsTableContainer.classList.add("hidden");
+        if (p3) p3.innerHTML = "";
+      } else {
+        // Voting has ended, show results
+        votingOngoingMessage.classList.add("hidden");
+        resultsTableContainer.classList.remove("hidden");
+        if (showResultsBtn) showResultsBtn.classList.add("hidden");
+        await getAllCandidates();
+      }
+    } catch (err) {
+      console.error("Error checking results:", err);
+      if (p3) {
+        p3.innerHTML = "❌ Failed to load results. Please refresh the page.";
+        p3.style.color = "red";
+      }
+    }
+  } else {
+    if (p3) {
+      p3.innerHTML = "⚠️ Please connect your wallet first";
+      p3.style.color = "orange";
+    }
+  }
+}
+
+const voteStatus = async () => {
+  // Check if wallet is connected
+  if (!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
+    var status = document.getElementById("status");
+    if (status && !status.innerHTML) {
+      status.innerHTML = "Connect wallet to view voting status";
+    }
+    return;
+  }
+
+  // Wait for config to load
+  if (!configLoaded) {
+    await loadConfig();
+  }
+
+  if (WALLET_CONNECTED && WALLET_CONNECTED !== "") {
+    var status = document.getElementById("status");
+    var remainingTime = document.getElementById("time");
+
+    // Use the connected provider instead of creating a new one
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
+    const signer = ethersProvider.getSigner();
+    const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
+    const currentStatus = await contractInstance.getVotingStatus();
+    const time = await contractInstance.getRemainingTime();
+    console.log(time);
+    status.innerHTML = currentStatus == 1 ? "Voting is currently open" : "Voting is finished";
+    const seconds = Number(time.toString());
+    remainingTime.innerHTML = `Remaining time is ${seconds} seconds`;
+  }
+  else {
+    var status = document.getElementById("status");
+    if (status && !status.innerHTML) {
+      status.innerHTML = "Connect MetaMask to view voting status";
+    }
+  }
+}
+
+const getAllCandidates = async () => {
+  // Check if wallet is connected
+  if (!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
+    return;
+  }
+
+  // Wait for config to load
+  if (!configLoaded) {
+    await loadConfig();
+  }
+
+  if (WALLET_CONNECTED && WALLET_CONNECTED !== "") {
     var p3 = document.getElementById("p3");
-    
-    // Check if wallet is connected
-    if(!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
-        if (p3) {
-            p3.innerHTML = "⚠️ Please connect your wallet to view results";
-            p3.style.color = "orange";
-        }
-        return;
-    }
-    
-    // Wait for config to load
-    if (!configLoaded) {
-        await loadConfig();
-    }
-    
-    if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
-        try {
-            // Use the connected provider instead of creating a new one
-            const ethersProvider = new ethers.providers.Web3Provider(provider);
-            const signer = ethersProvider.getSigner();
-            const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
-            
-            // Check voting status
-            const currentStatus = await contractInstance.getVotingStatus();
-            const votingOngoingMessage = document.getElementById("votingOngoingMessage");
-            const resultsTableContainer = document.getElementById("resultsTableContainer");
-            const showResultsBtn = document.getElementById("showResultsBtn");
-            
-            if (currentStatus) {
-                // Voting is still ongoing
-                votingOngoingMessage.classList.remove("hidden");
-                resultsTableContainer.classList.add("hidden");
-                if (p3) p3.innerHTML = "";
-            } else {
-                // Voting has ended, show results
-                votingOngoingMessage.classList.add("hidden");
-                resultsTableContainer.classList.remove("hidden");
-                if (showResultsBtn) showResultsBtn.classList.add("hidden");
-                await getAllCandidates();
-            }
-        } catch (err) {
-            console.error("Error checking results:", err);
-            if (p3) {
-                p3.innerHTML = "❌ Failed to load results. Please refresh the page.";
-                p3.style.color = "red";
-            }
-        }
-    } else {
-        if (p3) {
-            p3.innerHTML = "⚠️ Please connect your wallet first";
-            p3.style.color = "orange";
-        }
-    }
-}
 
-const voteStatus = async() => {
-    // Check if wallet is connected
-    if(!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
-        var status = document.getElementById("status");
-        if (status && !status.innerHTML) {
-            status.innerHTML = "Connect wallet to view voting status";
-        }
-        return;
-    }
-    
-    // Wait for config to load
-    if (!configLoaded) {
-        await loadConfig();
-    }
-    
-    if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
-        var status = document.getElementById("status");
-        var remainingTime = document.getElementById("time");
-        
-        // Use the connected provider instead of creating a new one
-        const ethersProvider = new ethers.providers.Web3Provider(provider);
-        const signer = ethersProvider.getSigner();
-        const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
-        const currentStatus = await contractInstance.getVotingStatus();
-  const time = await contractInstance.getRemainingTime();
-  console.log(time);
-        status.innerHTML = currentStatus == 1 ? "Voting is currently open" : "Voting is finished";
-  const seconds = Number(time.toString());
-  remainingTime.innerHTML = `Remaining time is ${seconds} seconds`;
-    }
-    else {
-        var status = document.getElementById("status");
-        if (status && !status.innerHTML) {
-            status.innerHTML = "Connect MetaMask to view voting status";
-        }
-    }
-}
+    // Use the connected provider instead of creating a new one
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
+    const signer = ethersProvider.getSigner();
+    const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
+    p3.innerHTML = "Please wait, getting all the candidates from the voting smart contract";
+    var candidates = await contractInstance.getAllVotesOfCandidates();
+    console.log(candidates);
+    var table = document.getElementById("myTable");
 
-const getAllCandidates = async() => {
-    // Check if wallet is connected
-    if(!WALLET_CONNECTED || WALLET_CONNECTED === "" || !provider) {
-        return;
+    // Clear existing rows (except header)
+    var rowCount = table.rows.length;
+    for (var i = rowCount - 1; i > 0; i--) {
+      table.deleteRow(i);
     }
-    
-    // Wait for config to load
-    if (!configLoaded) {
-        await loadConfig();
+
+    for (let i = 0; i < candidates.length; i++) {
+      var row = table.insertRow();
+      var idCell = row.insertCell();
+      var descCell = row.insertCell();
+      var statusCell = row.insertCell();
+
+      idCell.innerHTML = i;
+      descCell.innerHTML = candidates[i].name;
+      statusCell.innerHTML = candidates[i].voteCount.toString();
     }
-    
-    if(WALLET_CONNECTED && WALLET_CONNECTED !== "") {
-        var p3 = document.getElementById("p3");
-        
-        // Use the connected provider instead of creating a new one
-        const ethersProvider = new ethers.providers.Web3Provider(provider);
-        const signer = ethersProvider.getSigner();
-        const contractInstance = new ethers.Contract(contractAddress, contractAbi, signer);
-        p3.innerHTML = "Please wait, getting all the candidates from the voting smart contract";
-        var candidates = await contractInstance.getAllVotesOfCandidates();
-        console.log(candidates);
-        var table = document.getElementById("myTable");
 
-        // Clear existing rows (except header)
-        var rowCount = table.rows.length;
-        for (var i = rowCount - 1; i > 0; i--) {
-            table.deleteRow(i);
-        }
-
-        for (let i = 0; i < candidates.length; i++) {
-            var row = table.insertRow();
-            var idCell = row.insertCell();
-            var descCell = row.insertCell();
-            var statusCell = row.insertCell();
-
-            idCell.innerHTML = i;
-            descCell.innerHTML = candidates[i].name;
-            statusCell.innerHTML = candidates[i].voteCount.toString();
-        }
-
-        p3.innerHTML = "The tasks are updated"
-    }
-    else {
-        var p3 = document.getElementById("p3");
-        p3.innerHTML = "Please connect your wallet first";
-    }
+    p3.innerHTML = "The tasks are updated"
+  }
+  else {
+    var p3 = document.getElementById("p3");
+    p3.innerHTML = "Please connect your wallet first";
+  }
 }

@@ -6,11 +6,11 @@ const fileUpload = require('express-fileupload');
 
 // Rate limiting configuration
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: '⚠️ Too many requests from this IP, please try again later.',
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: '⚠️ Too many requests from this IP, please try again later.',
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
 // Apply rate limiting to all requests
@@ -18,7 +18,7 @@ app.use(limiter);
 
 app.use(
     fileUpload({
-        extended:true
+        extended: true
     })
 )
 app.use(express.static(__dirname));
@@ -44,7 +44,7 @@ if (!CONTRACT_ADDRESS) {
     }
 }
 
-const {abi} = require('./artifacts/contracts/Voting.sol/Voting.json');
+const { abi } = require('./artifacts/contracts/Voting.sol/Voting.json');
 const provider = new ethers.providers.JsonRpcProvider(API_URL);
 
 const signer = new ethers.Wallet(PRIVATE_KEY, provider);
@@ -66,17 +66,17 @@ function hasResultsLogged(address) {
             return false;
         }
         const content = fs.readFileSync(LOG_PATH, 'utf8');
-        
+
         // Split by separator blocks to avoid cross-matching
         const blocks = content.split('='.repeat(80));
-        
+
         // Look for a block that has BOTH "Results Date" AND the specific contract address
         const found = blocks.some(block => {
             const hasResultsDate = /Results Date:/i.test(block);
             const hasAddress = block.includes(address);
             return hasResultsDate && hasAddress;
         });
-        
+
         console.log(`[Results Logger] Checked if results logged for ${address}: ${found}`);
         return found;
     } catch (err) {
@@ -169,16 +169,25 @@ app.get("/index.html", (req, res) => {
 app.post("/vote", async (req, res) => {
     try {
         const candidateIndex = req.body.candidateIndex;
+
+        // Input validation
+        if (candidateIndex === undefined || candidateIndex === null) {
+            return res.status(400).json({ error: "candidateIndex is required" });
+        }
+        if (!Number.isInteger(candidateIndex) || candidateIndex < 0) {
+            return res.status(400).json({ error: "candidateIndex must be a non-negative integer" });
+        }
+
         console.log("Voting for candidate index:", candidateIndex);
-        
+
         const votingStatus = await contractInstance.getVotingStatus();
         if (!votingStatus) {
             return res.status(400).json({ error: "Voting is not active" });
         }
-        
-        const tx = await contractInstance.vote(candidateIndex);
+
+        const tx = await contractInstance.vote(candidateIndex, "0x");
         await tx.wait();
-        
+
         res.json({ success: true, message: "Vote cast successfully", transactionHash: tx.hash });
     } catch (error) {
         console.error("Error voting:", error);
@@ -189,11 +198,24 @@ app.post("/vote", async (req, res) => {
 app.post("/addCandidate", async (req, res) => {
     try {
         const candidateName = req.body.name;
-        console.log("Adding candidate:", candidateName);
-        
-        const tx = await contractInstance.addCandidate(candidateName);
+
+        // Input validation
+        if (!candidateName || typeof candidateName !== 'string') {
+            return res.status(400).json({ error: "Candidate name is required and must be a string" });
+        }
+        const trimmedName = candidateName.trim();
+        if (trimmedName.length === 0 || trimmedName.length > 100) {
+            return res.status(400).json({ error: "Candidate name must be 1-100 characters" });
+        }
+        if (!/^[a-zA-Z0-9\s\-\.]+$/.test(trimmedName)) {
+            return res.status(400).json({ error: "Candidate name contains invalid characters (only letters, numbers, spaces, hyphens, periods allowed)" });
+        }
+
+        console.log("Adding candidate:", trimmedName);
+
+        const tx = await contractInstance.addCandidate(trimmedName);
         await tx.wait();
-        
+
         res.json({ success: true, message: "Candidate added successfully", transactionHash: tx.hash });
     } catch (error) {
         console.error("Error adding candidate:", error);
@@ -246,15 +268,15 @@ app.get("/api/qr/generate", async (req, res) => {
     try {
         const electionName = req.query.election || 'Current Election';
         const baseUrl = req.query.baseUrl || 'https://vot-eth.vercel.app';
-        
+
         const votingUrl = `${baseUrl}?contract=${CONTRACT_ADDRESS}&election=${encodeURIComponent(electionName)}`;
-        
+
         const qrBuffer = await generateQRBuffer(votingUrl);
-        
+
         res.setHeader('Content-Type', 'image/png');
         res.setHeader('Content-Disposition', `inline; filename="qr_${electionName.replace(/[^a-z0-9]/gi, '_')}.png"`);
         res.send(qrBuffer);
-        
+
         console.log(`✅ QR code generated for: ${electionName}`);
     } catch (error) {
         console.error("Error generating QR code:", error);
@@ -271,24 +293,24 @@ app.get("/api/qr/data", async (req, res) => {
         const contractAddress = req.query.contract || CONTRACT_ADDRESS;
         const electionName = req.query.election || 'Election';
         const baseUrl = req.query.baseUrl || 'https://vot-eth.vercel.app';
-        
+
         // Validate contract address
         if (!contractAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
             return res.status(400).json({ error: 'Invalid contract address format' });
         }
-        
+
         const votingUrl = `${baseUrl}?contract=${contractAddress}&election=${encodeURIComponent(electionName)}`;
-        
+
         const dataUrl = await generateQRDataURL(votingUrl);
-        
-        res.json({ 
+
+        res.json({
             success: true,
             dataUrl,
             votingUrl,
             electionName,
             contractAddress
         });
-        
+
         console.log(`✅ QR data URL generated for: ${electionName}`);
     } catch (error) {
         console.error("Error generating QR data URL:", error);
